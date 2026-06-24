@@ -178,8 +178,8 @@ public static class DbSeeder
         AddGroupMatches("H", [
             (1, 0, 1, new DateTime(2026, 6, 15, 10, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
             (1, 2, 3, new DateTime(2026, 6, 16, 16, 0, 0), "Hard Rock Stadium, Miami"),
-            (2, 0, 2, new DateTime(2026, 6, 21, 16, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
-            (2, 3, 1, new DateTime(2026, 6, 21, 10, 0, 0), "Hard Rock Stadium, Miami"),
+            (2, 0, 2, new DateTime(2026, 6, 21, 10, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (2, 3, 1, new DateTime(2026, 6, 21, 16, 0, 0), "Hard Rock Stadium, Miami"),
             (3, 1, 2, new DateTime(2026, 6, 26, 18, 0, 0), "NRG Stadium, Houston"), // Simultáneo
             (3, 3, 0, new DateTime(2026, 6, 26, 18, 0, 0), "Estadio Guadalajara, Guadalajara") // Simultáneo
         ]);
