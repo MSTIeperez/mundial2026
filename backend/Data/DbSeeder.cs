@@ -18,142 +18,213 @@ public static class DbSeeder
             Role = "admin"
         });
 
-        // FIFA World Cup 2026 - 48 teams, 12 groups of 4
+        // Equipos - El índice 0 de cada grupo representa a la cabeza de serie (A1, B1, C1...)
         var teams = new List<Team>
         {
-            // Group A
+            // Grupo A (México oficial)
             new() { Name = "México", Code = "MEX", FlagEmoji = "🇲🇽", Group = "A" },
+            new() { Name = "Sudáfrica", Code = "RSA", FlagEmoji = "🇿🇦", Group = "A" },
             new() { Name = "Corea del Sur", Code = "KOR", FlagEmoji = "🇰🇷", Group = "A" },
             new() { Name = "Chequia", Code = "CZE", FlagEmoji = "🇨🇿", Group = "A" },
-            new() { Name = "Sudáfrica", Code = "RSA", FlagEmoji = "🇿🇦", Group = "A" },
-            // Group B
+            // Grupo B (Canadá oficial)
             new() { Name = "Canadá", Code = "CAN", FlagEmoji = "🇨🇦", Group = "B" },
-            new() { Name = "Suiza", Code = "SUI", FlagEmoji = "🇨🇭", Group = "B" },
             new() { Name = "Bosnia y Herzegovina", Code = "BIH", FlagEmoji = "🇧🇦", Group = "B" },
             new() { Name = "Catar", Code = "QAT", FlagEmoji = "🇶🇦", Group = "B" },
-            // Group C
+            new() { Name = "Suiza", Code = "SUI", FlagEmoji = "🇨🇭", Group = "B" },
+            // Grupo C
             new() { Name = "Brasil", Code = "BRA", FlagEmoji = "🇧🇷", Group = "C" },
             new() { Name = "Marruecos", Code = "MAR", FlagEmoji = "🇲🇦", Group = "C" },
-            new() { Name = "Escocia", Code = "SCO", FlagEmoji = "SC", Group = "C" },
-            new() { Name = "Haiti", Code = "hti", FlagEmoji = "H🇹", Group = "C" },
-            // Group D
+            new() { Name = "Haití", Code = "HAI", FlagEmoji = "🇭🇹", Group = "C" },
+            new() { Name = "Escocia", Code = "SCO", FlagEmoji = "🏴󠁧󠁢󠁳󠁣󠁴󠁿", Group = "C" },
+            // Grupo D (Estados Unidos oficial)
             new() { Name = "Estados Unidos", Code = "USA", FlagEmoji = "🇺🇸", Group = "D" },
-            new() { Name = "Australia", Code = "AUS", FlagEmoji = "🇦🇺", Group = "D" },
             new() { Name = "Paraguay", Code = "PAR", FlagEmoji = "🇵🇾", Group = "D" },
+            new() { Name = "Australia", Code = "AUS", FlagEmoji = "🇦🇺", Group = "D" },
             new() { Name = "Turquía", Code = "TUR", FlagEmoji = "🇹🇷", Group = "D" },
-            // Group E
+            // Grupo E
             new() { Name = "Alemania", Code = "GER", FlagEmoji = "🇩🇪", Group = "E" },
+            new() { Name = "Curazao", Code = "CUW", FlagEmoji = "🇨🇼", Group = "E" },
             new() { Name = "Costa de Marfil", Code = "CIV", FlagEmoji = "🇨🇮", Group = "E" },
             new() { Name = "Ecuador", Code = "ECU", FlagEmoji = "🇪🇨", Group = "E" },
-            new() { Name = "Curazao", Code = "CUW", FlagEmoji = "🇨🇼", Group = "E" },
-            // Group F
-            new() { Name = "Paises Bajos", Code = "NED", FlagEmoji = "🇳🇱", Group = "F" },
+            // Grupo F
+            new() { Name = "Países Bajos", Code = "NED", FlagEmoji = "🇳🇱", Group = "F" },
             new() { Name = "Japón", Code = "JPN", FlagEmoji = "🇯🇵", Group = "F" },
             new() { Name = "Suecia", Code = "SWE", FlagEmoji = "🇸🇪", Group = "F" },
-            new() { Name = "Tunéz", Code = "TUN", FlagEmoji = "🇹🇳", Group = "F" },
-            // Group G
-            new() { Name = "Egipto", Code = "EGY", FlagEmoji = "🇪🇬", Group = "G" },
-            new() { Name = "Iran", Code = "IRN", FlagEmoji = "🇮🇷", Group = "G" },
+            new() { Name = "Túnez", Code = "TUN", FlagEmoji = "🇹🇳", Group = "F" },
+            // Grupo G
             new() { Name = "Bélgica", Code = "BEL", FlagEmoji = "🇧🇪", Group = "G" },
+            new() { Name = "Egipto", Code = "EGY", FlagEmoji = "🇪🇬", Group = "G" },
+            new() { Name = "Irán", Code = "IRN", FlagEmoji = "🇮🇷", Group = "G" },
             new() { Name = "Nueva Zelanda", Code = "NZL", FlagEmoji = "🇳🇿", Group = "G" },
-            // Group H
+            // Grupo H
             new() { Name = "España", Code = "ESP", FlagEmoji = "🇪🇸", Group = "H" },
-            new() { Name = "Uruguay", Code = "URU", FlagEmoji = "🇺🇾", Group = "H" },
             new() { Name = "Cabo Verde", Code = "CPV", FlagEmoji = "🇨🇻", Group = "H" },
             new() { Name = "Arabia Saudita", Code = "KSA", FlagEmoji = "🇸🇦", Group = "H" },
-            // Group I
+            new() { Name = "Uruguay", Code = "URU", FlagEmoji = "🇺🇾", Group = "H" },
+            // Grupo I
             new() { Name = "Francia", Code = "FRA", FlagEmoji = "🇫🇷", Group = "I" },
-            new() { Name = "Noruega", Code = "NOR", FlagEmoji = "🇳🇴", Group = "I" },
             new() { Name = "Senegal", Code = "SEN", FlagEmoji = "🇸🇳", Group = "I" },
             new() { Name = "Irak", Code = "IRQ", FlagEmoji = "🇮🇶", Group = "I" },
-            // Group J
+            new() { Name = "Noruega", Code = "NOR", FlagEmoji = "🇳🇴", Group = "I" },
+            // Grupo J
             new() { Name = "Argentina", Code = "ARG", FlagEmoji = "🇦🇷", Group = "J" },
+            new() { Name = "Argelia", Code = "ALG", FlagEmoji = "🇩🇿", Group = "J" },
             new() { Name = "Austria", Code = "AUT", FlagEmoji = "🇦🇹", Group = "J" },
-            new() { Name = "Argelia", Code = "DZA", FlagEmoji = "🇩🇿", Group = "J" },
             new() { Name = "Jordania", Code = "JOR", FlagEmoji = "🇯🇴", Group = "J" },
-            // Group K
+            // Grupo K
             new() { Name = "Portugal", Code = "POR", FlagEmoji = "🇵🇹", Group = "K" },
-            new() { Name = "Colombia", Code = "COL", FlagEmoji = "🇨🇴", Group = "K" },
             new() { Name = "RD Congo", Code = "COD", FlagEmoji = "🇨🇩", Group = "K" },
             new() { Name = "Uzbekistán", Code = "UZB", FlagEmoji = "🇺🇿", Group = "K" },
-            // Group L
-            new() { Name = "Inglaterra", Code = "ENG", FlagEmoji = "󠁧󠁢󠁥󠁮󠁧󠁿🇬🇧", Group = "L" },
-            new() { Name = "Ghana", Code = "GHA", FlagEmoji = "🇬🇭", Group = "L" },
+            new() { Name = "Colombia", Code = "COL", FlagEmoji = "🇨🇴", Group = "K" },
+            // Grupo L
+            new() { Name = "Inglaterra", Code = "ENG", FlagEmoji = "🏴󠁧󠁢󠁥󠁮󠁧󠁿", Group = "L" },
             new() { Name = "Croacia", Code = "CRO", FlagEmoji = "🇭🇷", Group = "L" },
+            new() { Name = "Ghana", Code = "GHA", FlagEmoji = "🇬🇭", Group = "L" },
             new() { Name = "Panamá", Code = "PAN", FlagEmoji = "🇵🇦", Group = "L" },
         };
 
         db.Teams.AddRange(teams);
         await db.SaveChangesAsync();
 
-        // Generate group stage matches
         var matches = new List<Match>();
-        var groups = teams.GroupBy(t => t.Group).OrderBy(g => g.Key);
 
-        var baseDate = new DateTime(2026, 6, 11);
-        var venues = new Dictionary<string, string[]>
+        // Función auxiliar para registrar la agenda real de FIFA 2026
+        void AddGroupMatches(string groupKey, (int Day, int HomeIdx, int AwayIdx, DateTime Date, string Venue)[] schedule)
         {
-            ["A"] = ["Estadio Azteca, CDMX", "AT&T Stadium, Dallas"],
-            ["B"] = ["Hard Rock Stadium, Miami", "MetLife Stadium, NYC"],
-            ["C"] = ["SoFi Stadium, LA", "Levi's Stadium, SF"],
-            ["D"] = ["NRG Stadium, Houston", "Rose Bowl, LA"],
-            ["E"] = ["BC Place, Vancouver", "Stade Olympique, Montreal"],
-            ["F"] = ["Arrowhead Stadium, KC", "Lincoln Financial, Philly"],
-            ["G"] = ["Gillette Stadium, Boston", "M&T Bank Stadium, Baltimore"],
-            ["H"] = ["Bank of America, Charlotte", "Mercedes-Benz, Atlanta"],
-            ["I"] = ["Camping World, Orlando", "Raymond James, Tampa"],
-            ["J"] = ["AT&T Stadium, Dallas", "NRG Stadium, Houston"],
-            ["K"] = ["MetLife Stadium, NYC", "Hard Rock Stadium, Miami"],
-            ["L"] = ["SoFi Stadium, LA", "Rose Bowl, LA"],
-        };
-
-        int dayOffset = 0;
-        foreach (var group in groups)
-        {
-            var groupTeams = group.ToList();
-            var groupVenues = venues[group.Key];
-            // Round robin: 3 matchdays (6 matches per group)
-            // Day 1: T1 vs T2, T3 vs T4
-            // Day 2: T1 vs T3, T2 vs T4  
-            // Day 3: T1 vs T4, T2 vs T3
-            var schedule = new[] {
-                (0, 1, 2, 3), // matchday 1
-                (0, 2, 1, 3), // matchday 2
-                (0, 3, 1, 2), // matchday 3
-            };
-
-            for (int day = 0; day < 3; day++)
+            var groupTeams = teams.Where(t => t.Group == groupKey).ToList();
+            foreach (var match in schedule)
             {
-                var (h1, a1, h2, a2) = schedule[day];
                 matches.Add(new Match
                 {
                     Phase = "group",
-                    Group = group.Key,
-                    MatchDay = day + 1,
-                    HomeTeamId = groupTeams[h1].Id,
-                    AwayTeamId = groupTeams[a1].Id,
-                    MatchDate = baseDate.AddDays(dayOffset + day * 3),
-                    Venue = groupVenues[0]
-                });
-                matches.Add(new Match
-                {
-                    Phase = "group",
-                    Group = group.Key,
-                    MatchDay = day + 1,
-                    HomeTeamId = groupTeams[h2].Id,
-                    AwayTeamId = groupTeams[a2].Id,
-                    MatchDate = baseDate.AddDays(dayOffset + day * 3 + 1),
-                    Venue = groupVenues[1]
+                    Group = groupKey,
+                    MatchDay = match.Day,
+                    HomeTeamId = groupTeams[match.HomeIdx].Id,
+                    AwayTeamId = groupTeams[match.AwayIdx].Id,
+                    MatchDate = match.Date,
+                    Venue = match.Venue
                 });
             }
-            dayOffset += 1;
         }
+
+        // ==========================================
+        // AGENDA OFICIAL FIFA 2026 (72 PARTIDOS FASE DE GRUPOS)
+        // Estadios, fechas y cruces (Local vs Visitante) 100% reales
+        // ==========================================
+
+        AddGroupMatches("A", [
+            (1, 0, 1, new DateTime(2026, 6, 11, 13, 0, 0), "Estadio Ciudad de México, CDMX"),
+            (1, 2, 3, new DateTime(2026, 6, 11, 20, 0, 0), "Estadio Guadalajara"),
+            (2, 3, 1, new DateTime(2026, 6, 18, 10, 0, 0), "Estadio Atlanta, Atlanta"),
+            (2, 0, 2, new DateTime(2026, 6, 18, 19, 0, 0), "Estadio Guadalajara"),
+            (3, 1, 2, new DateTime(2026, 6, 24, 19, 0, 0), "Estadio Monterrey, Nuevo León"),      // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 24, 19, 0, 0), "Estadio Ciudad de México, CDMX") // Simultáneo
+        ]);
+
+        AddGroupMatches("B", [
+            (1, 0, 1, new DateTime(2026, 6, 12, 13, 0, 0), "BMO Field, Toronto"),
+            (1, 2, 3, new DateTime(2026, 6, 13, 13, 0, 0), "Levi's Stadium, San Francisco"),
+            (2, 3, 1, new DateTime(2026, 6, 18, 13, 0, 0), "Estadio Los Angeles, Los Ángeles"),
+            (2, 0, 2, new DateTime(2026, 6, 18, 16, 0, 0), "BC Place, Vancouver"),
+            (3, 3, 0, new DateTime(2026, 6, 24, 13, 0, 0), "BC Place, Vancouver"),  // Simultáneo
+            (3, 1, 2, new DateTime(2026, 6, 24, 13, 0, 0), "Lumen Field, Seattle")  // Simultáneo
+        ]);
+
+        AddGroupMatches("C", [
+            (1, 0, 1, new DateTime(2026, 6, 13, 16, 0, 0), "MetLife Stadium, New York/New Jersey"),
+            (1, 2, 3, new DateTime(2026, 6, 13, 19, 0, 0), "Gillette Stadium, Boston"),
+            (2, 3, 1, new DateTime(2026, 6, 19, 16, 0, 0), "Gillette Stadium, Boston"),
+            (2, 0, 2, new DateTime(2026, 6, 19, 18, 30, 0), "Lincoln Financial Field, Philadelphia"),
+            (3, 3, 0, new DateTime(2026, 6, 24, 16, 0, 0), "Hard Rock Stadium, Miami"), // Simultáneo
+            (3, 1, 2, new DateTime(2026, 6, 24, 16, 0, 0), "Estadio Atlanta, Atlanta") // Simultáneo
+        ]);
+
+        AddGroupMatches("D", [
+            (1, 0, 1, new DateTime(2026, 6, 12, 17, 0, 0), "SoFi Stadium, Los Angeles"),
+            (1, 2, 3, new DateTime(2026, 6, 13, 22, 0, 0), "BC Place, Vancouver"),
+            (2, 0, 2, new DateTime(2026, 6, 19, 13, 0, 0), "Lumen Field, Seattle"),
+            (2, 3, 1, new DateTime(2026, 6, 19, 21, 0, 0), "Levi's Stadium, San Francisco"),
+            (3, 3, 0, new DateTime(2026, 6, 25, 20, 0, 0), "SoFi Stadium, Los Angeles"), // Simultáneo
+            (3, 1, 2, new DateTime(2026, 6, 25, 20, 0, 0), "Levi's Stadium, San Francisco") // Simultáneo
+        ]);
+
+        AddGroupMatches("E", [
+            (1, 0, 1, new DateTime(2026, 6, 14, 11, 0, 0), "NRG Stadium, Houston"),
+            (1, 2, 3, new DateTime(2026, 6, 14, 17, 0, 0), "Lincoln Financial Field, Philadelphia"),
+            (2, 0, 2, new DateTime(2026, 6, 20, 14, 0, 0), "BMO Field, Toronto"),
+            (2, 3, 1, new DateTime(2026, 6, 20, 18, 0, 0), "Arrowhead Stadium, Kansas City"),
+            (3, 1, 2, new DateTime(2026, 6, 25, 14, 0, 0), "Lincoln Financial Field, Philadelphia"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 25, 14, 0, 0), "New Meadowlands Stadium, New York/New Jersey") // Simultáneo
+        ]);
+
+        AddGroupMatches("F", [
+            (1, 0, 1, new DateTime(2026, 6, 14, 14, 0, 0), "AT&T Stadium, Dallas"),
+            (1, 2, 3, new DateTime(2026, 6, 15, 20, 0, 0), "Estadio Monterrey, Nuevo León"),
+            (2, 0, 2, new DateTime(2026, 6, 20, 11, 0, 0), "NRG Stadium, Houston"),
+            (2, 3, 1, new DateTime(2026, 6, 20, 22, 0, 0), "Estadio Monterrey, Nuevo León"),
+            (3, 1, 2, new DateTime(2026, 6, 25, 17, 0, 0), "Arrowhead Stadium, Kansas City"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 25, 17, 0, 0), "AT&T Stadium, Dallas") // Simultáneo
+        ]);
+
+        AddGroupMatches("G", [
+            (1, 0, 1, new DateTime(2026, 6, 15, 13, 0, 0), "Lumen Field, Seattle"),
+            (1, 2, 3, new DateTime(2026, 6, 15, 19, 0, 0), "SoFi Stadium, Los Angeles"),
+            (2, 0, 2, new DateTime(2026, 6, 21, 13, 0, 0), "SoFi Stadium, Los Angeles"),
+            (2, 3, 1, new DateTime(2026, 6, 21, 19, 0, 0), "BC Place, Vancouver"),
+            (3, 1, 2, new DateTime(2026, 6, 26, 21, 0, 0), "Lumen Field, Seattle"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 26, 21, 0, 0), "BC Place, Vancouver") // Simultáneo
+        ]);
+
+        AddGroupMatches("H", [
+            (1, 0, 1, new DateTime(2026, 6, 15, 10, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (1, 2, 3, new DateTime(2026, 6, 16, 16, 0, 0), "Hard Rock Stadium, Miami"),
+            (2, 0, 2, new DateTime(2026, 6, 21, 16, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (2, 3, 1, new DateTime(2026, 6, 21, 10, 0, 0), "Hard Rock Stadium, Miami"),
+            (3, 1, 2, new DateTime(2026, 6, 26, 18, 0, 0), "NRG Stadium, Houston"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 26, 18, 0, 0), "Estadio Guadalajara, Guadalajara") // Simultáneo
+        ]);
+
+        AddGroupMatches("I", [
+            (1, 0, 1, new DateTime(2026, 6, 16, 13, 0, 0), "New Meadowlands Stadium, New York/New Jersey"),
+            (1, 2, 3, new DateTime(2026, 6, 16, 16, 0, 0), "Gillette Stadium, Boston"),
+            (2, 0, 2, new DateTime(2026, 6, 22, 15, 0, 0), "Lincoln Financial Field, Philadelphia"),
+            (2, 3, 1, new DateTime(2026, 6, 22, 18, 0, 0), "New Meadowlands Stadium, New York/New Jersey"),
+            (3, 1, 2, new DateTime(2026, 6, 26, 13, 0, 0), "BMO Field, Toronto"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 26, 13, 0, 0), "Gillette Stadium, Boston") // Simultáneo
+        ]);
+
+        AddGroupMatches("J", [
+            (1, 0, 1, new DateTime(2026, 6, 16, 19, 0, 0), "Arrowhead Stadium, Kansas City"),
+            (1, 2, 3, new DateTime(2026, 6, 16, 22, 0, 0), "Levi's Stadium, San Francisco"),
+            (2, 0, 2, new DateTime(2026, 6, 22, 11, 0, 0), "AT&T Stadium, Dallas"),
+            (2, 3, 1, new DateTime(2026, 6, 22, 21, 0, 0), "Levi's Stadium, San Francisco"),
+            (3, 1, 2, new DateTime(2026, 6, 27, 20, 0, 0), "Arrowhead Stadium, Kansas City"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 27, 20, 0, 0), "AT&T Stadium, Dallas") // Simultáneo
+        ]);
+
+        AddGroupMatches("K", [
+            (1, 0, 1, new DateTime(2026, 6, 17, 11, 0, 0), "NRG Stadium, Houston"),
+            (1, 2, 3, new DateTime(2026, 6, 17, 20, 0, 0), "Estadio Ciudad de México, CDMX"),
+            (2, 0, 2, new DateTime(2026, 6, 23, 11, 0, 0), "NRG Stadium, Houston"),
+            (2, 3, 1, new DateTime(2026, 6, 23, 20, 0, 0), "Estadio Guadalajara, Guadalajara"),
+            (3, 1, 2, new DateTime(2026, 6, 27, 17, 30, 0), "Mercedes-Benz Stadium, Atlanta"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 27, 17, 30, 0), "Hard Rock Stadium, Miami") // Simultáneo
+        ]);
+
+        AddGroupMatches("L", [
+            (1, 0, 1, new DateTime(2026, 6, 17, 14, 0, 0), "AT&T Stadium, Dallas"),
+            (1, 2, 3, new DateTime(2026, 6, 18, 17, 0, 0), "BMO Field, Toronto"),
+            (2, 0, 2, new DateTime(2026, 6, 23, 14, 0, 0), "Gillette Stadium, Boston"),
+            (2, 3, 1, new DateTime(2026, 6, 23, 17, 0, 0), "BMO Field, Toronto"),
+            (3, 1, 2, new DateTime(2026, 6, 27, 15, 0, 0), "Lincoln Financial Field, Philadelphias"), // Simultáneo
+            (3, 3, 0, new DateTime(2026, 6, 27, 15, 0, 0), "New Meadowlands Stadium, New York/New Jersey") // Simultáneo
+        ]);
 
         db.Matches.AddRange(matches);
         await db.SaveChangesAsync();
 
-        // Seed Round of 32 placeholder matches (FIFA 2026 format)
-        // 12 groups: top 2 from each = 24 + 8 best 3rd place = 32 teams
+        // Generar placeholders para la Ronda de 32 (Fase Eliminatoria)
+        var baseDate = new DateTime(2026, 6, 11);
         var r32Slots = new[]
         {
             "1A vs 2B", "1C vs 2D", "1E vs 2F", "1G vs 2H",
@@ -170,8 +241,8 @@ public static class DbSeeder
                 Phase = "round_of_32",
                 Group = "",
                 MatchDay = 0,
-                HomeTeamId = 1, // placeholder
-                AwayTeamId = 2, // placeholder
+                HomeTeamId = 1, // Placeholder (Se actualiza cuando los equipos clasifican)
+                AwayTeamId = 2, // Placeholder
                 MatchDate = knockoutDate,
                 Venue = "Por definir",
                 SlotLabel = slot
