@@ -1,0 +1,166 @@
+-- database: ../mundial2026.db
+
+--SELECT * FROM Matches;
+
+-- ==========================================
+-- RESULTADOS HASTA EL 23 DE JUNIO DE 2026
+-- ==========================================
+
+-- 11 de Junio
+UPDATE Matches SET HomeScore = 2, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'México') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Sudáfrica');
+
+UPDATE Matches SET HomeScore = 2, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Corea del Sur') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Chequia');
+
+-- 12 de Junio
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Canadá') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Bosnia y Herzegovina');
+
+UPDATE Matches SET HomeScore = 4, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Estados Unidos') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Paraguay');
+
+-- 13 de Junio
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Catar') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Suiza');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Brasil') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Marruecos');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Haití') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Escocia');
+
+UPDATE Matches SET HomeScore = 2, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Australia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Turquía');
+
+-- 14 de Junio
+UPDATE Matches SET HomeScore = 7, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Alemania') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Curazao');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Costa de Marfil') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Ecuador');
+
+UPDATE Matches SET HomeScore = 2, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Países Bajos') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Japón');
+
+UPDATE Matches SET HomeScore = 5, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Suecia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Túnez');
+
+-- 15 de Junio
+UPDATE Matches SET HomeScore = 0, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'España') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Cabo Verde');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Bélgica') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Egipto');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Arabia Saudita') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Uruguay');
+
+UPDATE Matches SET HomeScore = 2, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Irán') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Nueva Zelanda');
+
+-- 16 de Junio
+UPDATE Matches SET HomeScore = 3, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Francia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Senegal');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 4, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Irak') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Noruega');
+
+UPDATE Matches SET HomeScore = 3, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Argentina') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Argelia');
+
+UPDATE Matches SET HomeScore = 3, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Austria') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Jordania');
+
+-- 17 de Junio
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Portugal') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'RD Congo');
+
+UPDATE Matches SET HomeScore = 4, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Inglaterra') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Croacia');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Ghana') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Panamá');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 3, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Uzbekistán') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Colombia');
+
+-- 18 de Junio
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Chequia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Sudáfrica');
+
+UPDATE Matches SET HomeScore = 4, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Suiza') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Bosnia y Herzegovina');
+
+UPDATE Matches SET HomeScore = 6, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Canadá') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Catar');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'México') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Corea del Sur');
+
+-- 19 de Junio
+UPDATE Matches SET HomeScore = 2, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Estados Unidos') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Australia');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Escocia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Marruecos');
+
+UPDATE Matches SET HomeScore = 3, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Brasil') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Haití');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Turquía') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Paraguay');
+
+-- 20 de Junio
+UPDATE Matches SET HomeScore = 2, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Alemania') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Costa de Marfil');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Ecuador') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Curazao');
+
+UPDATE Matches SET HomeScore = 5, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Países Bajos') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Suecia');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 4, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Túnez') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Japón');
+
+-- 21 de Junio
+UPDATE Matches SET HomeScore = 4, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'España') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Arabia Saudita');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Bélgica') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Irán');
+
+UPDATE Matches SET HomeScore = 2, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Uruguay') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Cabo Verde');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 3, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Nueva Zelanda') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Egipto');
+
+-- 22 de Junio
+UPDATE Matches SET HomeScore = 2, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Argentina') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Austria');
+
+UPDATE Matches SET HomeScore = 3, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Francia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Irak');
+
+UPDATE Matches SET HomeScore = 3, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Noruega') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Senegal');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 2, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Jordania') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Argelia');
+
+-- 23 de Junio 
+UPDATE Matches SET HomeScore = 5, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Portugal') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Uzbekistán');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Inglaterra') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Ghana');
+
+UPDATE Matches SET HomeScore = 0, AwayScore = 1, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Panamá') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'Croacia');
+
+UPDATE Matches SET HomeScore = 1, AwayScore = 0, Played = 1 
+WHERE HomeTeamId = (SELECT Id FROM Teams WHERE Name = 'Colombia') AND AwayTeamId = (SELECT Id FROM Teams WHERE Name = 'RD Congo');
