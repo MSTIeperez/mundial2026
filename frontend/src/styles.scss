@@ -1,0 +1,179 @@
+/* ─── World Cup 2026 Design System ─────────────────────────────────────────── */
+:root {
+  --c-bg:        #0a0e1a;
+  --c-surface:   #111827;
+  --c-card:      #1a2234;
+  --c-border:    #2a3448;
+  --c-accent:    #c8a227;   /* FIFA gold */
+  --c-accent2:   #e63946;   /* red/alert */
+  --c-green:     #2dc653;
+  --c-text:      #e8eaf0;
+  --c-muted:     #8892a4;
+  --c-win:       #1a3a2a;
+  --c-loss:      #3a1a1a;
+  --c-draw:      #2a2a3a;
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius:  8px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 3px; }
+
+/* ─── Typography ─────────────────────────────────────────────────── */
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: .04em; }
+
+/* ─── Cards ──────────────────────────────────────────────────────── */
+.card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px;
+  border: none; border-radius: var(--radius);
+  font-family: var(--font-body); font-weight: 600; font-size: 14px;
+  cursor: pointer; transition: all .2s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--c-accent); color: #0a0e1a;
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent; color: var(--c-muted);
+  border: 1px solid var(--c-border);
+}
+.btn-ghost:hover { border-color: var(--c-accent); color: var(--c-accent); }
+.btn-danger {
+  background: var(--c-accent2); color: white;
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ─── Form inputs ────────────────────────────────────────────────── */
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: 12px; font-weight: 600; color: var(--c-muted); text-transform: uppercase; letter-spacing: .08em; }
+.form-control {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 14px;
+  transition: border-color .2s;
+  width: 100%;
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px rgba(200,162,39,.15);
+}
+.form-control::placeholder { color: var(--c-muted); }
+
+/* ─── Score input ────────────────────────────────────────────────── */
+.score-input {
+  width: 52px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px;
+}
+
+/* ─── Badge / pill ───────────────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: 2px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.badge-gold   { background: rgba(200,162,39,.2); color: var(--c-accent); border: 1px solid var(--c-accent); }
+.badge-green  { background: rgba(45,198,83,.15); color: var(--c-green); }
+.badge-red    { background: rgba(230,57,70,.15); color: var(--c-accent2); }
+.badge-muted  { background: var(--c-border); color: var(--c-muted); }
+
+/* ─── Table ──────────────────────────────────────────────────────── */
+.standings-table { width: 100%; border-collapse: collapse; }
+.standings-table th {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--c-muted);
+  padding: 10px 8px; text-align: center;
+  border-bottom: 1px solid var(--c-border);
+}
+.standings-table th:first-child { text-align: left; }
+.standings-table td {
+  padding: 12px 8px; text-align: center;
+  border-bottom: 1px solid rgba(42,52,72,.5);
+}
+.standings-table td:first-child { text-align: left; }
+.standings-table tr:last-child td { border-bottom: none; }
+.standings-table tr:nth-child(1) td:first-child { border-left: 3px solid var(--c-green); }
+.standings-table tr:nth-child(2) td:first-child { border-left: 3px solid var(--c-green); }
+.standings-table tr:nth-child(3) td:first-child { border-left: 3px solid var(--c-accent); }
+
+/* ─── Notification ───────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--c-card); border: 1px solid var(--c-border);
+  border-radius: var(--radius); padding: 14px 20px;
+  box-shadow: var(--shadow); z-index: 9999;
+  animation: slideIn .3s ease;
+  display: flex; align-items: center; gap: 10px;
+}
+.toast.success { border-color: var(--c-green); }
+.toast.error   { border-color: var(--c-accent2); }
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* ─── Loader ─────────────────────────────────────────────────────── */
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--c-border);
+  border-top-color: var(--c-accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Utilities ──────────────────────────────────────────────────── */
+.text-gold   { color: var(--c-accent); }
+.text-green  { color: var(--c-green); }
+.text-muted  { color: var(--c-muted); }
+.text-mono   { font-family: var(--font-mono); }
+.mt-4  { margin-top: 16px; }
+.mt-8  { margin-top: 32px; }
+.gap-4 { gap: 16px; }
+.flex  { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
