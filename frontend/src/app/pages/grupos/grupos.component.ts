@@ -3,13 +3,16 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { GroupStandings, Match } from '../../models/models';
+import { DatePipe } from '@angular/common';
+import { FlagPipe } from '../../pipes/FlagPipe';
 
 interface ScoreEdit { homeScore: number; awayScore: number; }
 
 @Component({
   selector: 'app-grupos',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, FlagPipe],
+  providers: [DatePipe],
   template: `
     <div class="page">
       <header class="page-header">
@@ -45,6 +48,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                   <div class="match-card" [class.played]="match.played">
                     <div class="match-meta">
                       <span class="text-muted" style="font-size:11px">{{ match.venue }}</span>
+                      <span class="text-muted" style="font-size:11px">{{ match.matchDate }}</span>
                       <span class="badge" [class]="match.played ? 'badge-green' : 'badge-muted'">
                         {{ match.played ? 'Jugado' : 'Pendiente' }}
                       </span>
@@ -53,7 +57,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                     <div class="match-body">
                       <!-- Home Team -->
                       <div class="team-side home">
-                        <span class="flag">{{ match.homeTeam.flagEmoji }}</span>
+                        <span class="flag">{{ match.homeTeam.flagEmoji | flag}}</span>
                         <span class="team-name">{{ match.homeTeam.name }}</span>
                         <span class="team-code text-muted">{{ match.homeTeam.code }}</span>
                       </div>
@@ -83,7 +87,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                       <div class="team-side away">
                         <span class="team-code text-muted">{{ match.awayTeam.code }}</span>
                         <span class="team-name">{{ match.awayTeam.name }}</span>
-                        <span class="flag">{{ match.awayTeam.flagEmoji }}</span>
+                        <span class="flag">{{ match.awayTeam.flagEmoji | flag}}</span>
                       </div>
                     </div>
 
@@ -143,7 +147,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                         </td>
                         <td>
                           <div class="team-cell">
-                            <span>{{ s.team.flagEmoji }}</span>
+                            <span>{{ s.team.flagEmoji | flag }}</span>
                             <span>{{ s.team.name }}</span>
                           </div>
                         </td>
@@ -317,7 +321,7 @@ export class GruposComponent implements OnInit {
 
   matchDays = computed(() =>
     [...new Set(this.groupMatches().map(m => m.matchDay))].sort());
-
+ 
   matchesByDay = computed(() => {
     const map: Record<number, Match[]> = {};
     for (const m of this.groupMatches()) {
