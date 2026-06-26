@@ -1,21 +1,20 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { GroupStandings, Match } from '../../models/models';
-import { DatePipe } from '@angular/common';
-import { FlagPipe } from '../../pipes/FlagPipe';
+import { FlagUrlPipe } from '../../pipes/flag-url.pipe';
 
 interface ScoreEdit { homeScore: number; awayScore: number; }
 
 @Component({
   selector: 'app-grupos',
   standalone: true,
-  imports: [FormsModule, FlagPipe],
-  providers: [DatePipe],
+  imports: [FormsModule, FlagUrlPipe,DatePipe],
   template: `
     <div class="page">
-      <header class="page-header">
+      <header class="page-header" [class.sticky]="true">
         <div>
           <h1 class="page-title">FASE DE <span class="text-gold">GRUPOS</span></h1>
           <p class="text-muted">FIFA World Cup 2026 · 48 selecciones · 12 grupos</p>
@@ -33,7 +32,6 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
         <div class="spinner"></div>
       } @else {
         <div class="group-layout">
-          <!-- LEFT: Matches -->
           <section class="matches-panel">
             <h2 class="panel-title">
               ⚽ GRUPO <span class="text-gold">{{ activeGroup() }}</span>
@@ -48,21 +46,22 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                   <div class="match-card" [class.played]="match.played">
                     <div class="match-meta">
                       <span class="text-muted" style="font-size:11px">{{ match.venue }}</span>
-                      <span class="text-muted" style="font-size:11px">{{ match.matchDate }}</span>
+                      <span class="match-date">{{ match.matchDate | date:'dd/MM/yyyy hh:mm' }}</span>
                       <span class="badge" [class]="match.played ? 'badge-green' : 'badge-muted'">
                         {{ match.played ? 'Jugado' : 'Pendiente' }}
                       </span>
                     </div>
 
                     <div class="match-body">
-                      <!-- Home Team -->
                       <div class="team-side home">
-                        <span class="flag">{{ match.homeTeam.flagEmoji | flag}}</span>
+                        <img class="flag-img"
+                          [src]="match.homeTeam.code | flagUrl"
+                          [alt]="match.homeTeam.name"
+                          loading="lazy">
                         <span class="team-name">{{ match.homeTeam.name }}</span>
                         <span class="team-code text-muted">{{ match.homeTeam.code }}</span>
                       </div>
 
-                      <!-- Score -->
                       <div class="score-area">
                         @if (editingId() === match.id) {
                           <input type="number" class="form-control score-input"
@@ -83,11 +82,13 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                         }
                       </div>
 
-                      <!-- Away Team -->
                       <div class="team-side away">
                         <span class="team-code text-muted">{{ match.awayTeam.code }}</span>
                         <span class="team-name">{{ match.awayTeam.name }}</span>
-                        <span class="flag">{{ match.awayTeam.flagEmoji | flag}}</span>
+                        <img class="flag-img"
+                          [src]="match.awayTeam.code | flagUrl"
+                          [alt]="match.awayTeam.name"
+                          loading="lazy">
                       </div>
                     </div>
 
@@ -116,13 +117,12 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
             }
           </section>
 
-          <!-- RIGHT: Standings -->
           <section class="standings-panel">
             <h2 class="panel-title">📊 TABLA DE POSICIONES</h2>
 
             @if (currentStandings().length > 0) {
               <div class="card" style="overflow:hidden;padding:0">
-                <table class="standings-table">
+                <table class="standings-table" >
                   <thead>
                     <tr>
                       <th style="width:32px">#</th>
@@ -147,7 +147,10 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                         </td>
                         <td>
                           <div class="team-cell">
-                            <span>{{ s.team.flagEmoji | flag }}</span>
+                            <img class="flag-img flag-sm"
+                              [src]="s.team.code | flagUrl"
+                              [alt]="s.team.name"
+                              loading="lazy">
                             <span>{{ s.team.name }}</span>
                           </div>
                         </td>
@@ -157,7 +160,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                         <td style="color:var(--c-accent2)">{{ s.lost }}</td>
                         <td>{{ s.goalsFor }}</td>
                         <td class="text-muted">{{ s.goalsAgainst }}</td>
-                        <td [class]="s.goalDifference > 0 ? 'text-green' : s.goalDifference < 0 ? '' : ''">
+                        <td [class]="s.goalDifference > 0 ? 'text-green' : ''">
                           {{ s.goalDifference > 0 ? '+' : '' }}{{ s.goalDifference }}
                         </td>
                         <td><strong class="text-mono">{{ s.points }}</strong></td>
@@ -192,8 +195,13 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
       display: flex; justify-content: space-between; align-items: flex-start;
       margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
     }
+    .page-header.sticky {
+      position: sticky; top: var(--navbar-height, 60px); background: var(--c-bg); z-index: 100;
+      padding: 16px 24px; margin-bottom: 16px; border-bottom: 1px solid var(--c-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
     .page-title { font-size: 32px; margin-bottom: 4px; }
-
+    
     .group-nav { display: flex; flex-wrap: wrap; gap: 6px; }
     .group-tab {
       width: 36px; height: 36px; border: 1px solid var(--c-border);
@@ -205,13 +213,24 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
     .group-tab:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(200,162,39,.1); }
 
     .group-layout {
-      display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start;
+      display: grid; grid-template-columns: 1fr 430px; gap: 24px; align-items: start;
     }
 
     .panel-title {
       font-size: 18px; margin-bottom: 16px;
       display: flex; align-items: center; gap: 10px;
     }
+
+    /* Flags — image-based, universal browser support */
+    .flag-img {
+      width: 80px; height: 53px;
+      object-fit: cover;
+      border-radius: 3px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.5);
+      flex-shrink: 0;
+      display: block;
+    }
+    .flag-img.flag-sm { width: 26px; height: 20px; }
 
     /* Matchday */
     .matchday-block { margin-bottom: 24px; }
@@ -222,7 +241,6 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
       border-bottom: 1px solid var(--c-border);
     }
 
-    /* Match card */
     .match-card {
       background: var(--c-card); border: 1px solid var(--c-border);
       border-radius: var(--radius-lg); padding: 16px;
@@ -233,20 +251,17 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
 
     .match-meta {
       display: flex; justify-content: space-between;
-      margin-bottom: 12px; align-items: center;
+      margin-bottom: 12px; align-items: center; gap: 8px;
     }
 
-    .match-body {
-      display: flex; align-items: center; gap: 12px;
-    }
+    .match-body { display: flex; align-items: center; gap: 50px; padding: 15px 106px; }
 
     .team-side {
       flex: 1; display: flex; align-items: center; gap: 8px;
     }
-    .team-side.home { justify-content: flex-end; flex-direction: row-reverse; }
-    .team-side.away { justify-content: flex-start; }
+    .team-side.home { justify-content: flex-start; }
+    .team-side.away { justify-content: flex-end; }
 
-    .flag { font-size: 28px; line-height: 1; }
     .team-name { font-weight: 600; font-size: 13px; }
     .team-code { font-family: var(--font-mono); font-size: 11px; }
 
@@ -255,15 +270,18 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
       min-width: 140px; justify-content: center;
     }
     .score-display {
-      font-family: var(--font-mono); font-size: 28px; font-weight: 700;
+      font-family: var(--font-mono); font-size: 37px; font-weight: 700;
       min-width: 36px; text-align: center;
     }
     .score-sep { color: var(--c-muted); font-size: 20px; }
-
+    
+    .score-input { font-size: 26px; text-align: -webkit-right; -webkit-appearance: none; margin: 0; -moz-appearance: textfield; }
+    .score-input::-webkit-outer-spin-button,
+    .score-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    
     .match-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
 
-    /* Standings table */
-    .team-cell { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+    .team-cell { display: flex; align-items: center; gap: 10px; font-weight: 500; }
     .pos-badge {
       width: 22px; height: 22px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -275,19 +293,17 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
 
     .tr-qualify td { background: rgba(45,198,83,.04); }
     .tr-third td   { background: rgba(200,162,39,.04); }
-
+    .standings-table table {
+      margin: -1px;;
+    }
     .standings-legend {
       padding: 10px 16px; display: flex; gap: 16px;
-      border-top: 1px solid var(--c-border);
-      font-size: 11px;
+      border-top: 1px solid var(--c-border); font-size: 11px;
     }
     .legend-item.green { color: var(--c-green); }
     .legend-item.gold  { color: var(--c-accent); }
 
-    .empty-state {
-      text-align: center; padding: 40px;
-      color: var(--c-muted); font-size: 13px;
-    }
+    .empty-state { text-align: center; padding: 40px; color: var(--c-muted); font-size: 13px; }
 
     @media (max-width: 1024px) {
       .group-layout { grid-template-columns: 1fr; }
@@ -295,6 +311,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
     @media (max-width: 600px) {
       .team-name { display: none; }
       .match-body { gap: 6px; }
+      .flag-img { width: 26px; height: 18px; }
     }
   `]
 })
@@ -309,7 +326,6 @@ export class GruposComponent implements OnInit {
 
   allMatches = signal<Match[]>([]);
   standings = signal<GroupStandings>({});
-
   edits: Record<number, ScoreEdit> = {};
 
   constructor(private api: ApiService, public auth: AuthService) {}
@@ -321,7 +337,7 @@ export class GruposComponent implements OnInit {
 
   matchDays = computed(() =>
     [...new Set(this.groupMatches().map(m => m.matchDay))].sort());
- 
+
   matchesByDay = computed(() => {
     const map: Record<number, Match[]> = {};
     for (const m of this.groupMatches()) {
@@ -346,7 +362,13 @@ export class GruposComponent implements OnInit {
       homeScore: match.homeScore ?? 0,
       awayScore: match.awayScore ?? 0
     };
+    
     this.editingId.set(match.id);
+    
+    setTimeout(() => {
+      const input = document.querySelector(`.match-card:has(input) .score-input`) as HTMLInputElement;
+      input?.focus();
+    });
   }
 
   saveScore(matchId: number) {
@@ -354,7 +376,6 @@ export class GruposComponent implements OnInit {
     this.saving.set(true);
     this.api.updateScore(matchId, e.homeScore, e.awayScore).subscribe({
       next: () => {
-        // Update local state
         this.allMatches.update(matches =>
           matches.map(m => m.id === matchId
             ? { ...m, homeScore: e.homeScore, awayScore: e.awayScore, played: true }
@@ -362,7 +383,6 @@ export class GruposComponent implements OnInit {
         this.editingId.set(null);
         this.saving.set(false);
         this.showToast('✅ Resultado guardado', 'success');
-        // Reload standings
         this.api.getAllStandings().subscribe(s => this.standings.set(s));
       },
       error: () => {
