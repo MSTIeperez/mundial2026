@@ -1,16 +1,18 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { GroupStandings, KnockoutSlot } from '../../models/models';
+import { FlagUrlPipe } from '../../pipes/flag-url.pipe';
 
 @Component({
   selector: 'app-eliminatorias',
   standalone: true,
+  imports: [FlagUrlPipe],
   template: `
     <div class="page">
       <header class="page-header">
         <div>
           <h1 class="page-title">FASE <span class="text-gold">ELIMINATORIA</span></h1>
-          <p class="text-muted">Ronda de 32 — Basado en resultados de la fase de grupos</p>
+          <p class="text-muted">Fases eliminatorias — Basado en resultados de la fase de grupos</p>
         </div>
         <div class="legend-pills">
           <span class="badge badge-green">✓ Clasificado</span>
@@ -21,20 +23,20 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
 
       <div class="rules-banner card">
         <h3 style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--c-accent)">
-          📋 REGLAS FIFA 2026 — FASE DE GRUPOS
+          📋 REGLAS FIFA 2026 — FASE ELIMINATORIA
         </h3>
         <div class="rules-grid">
           <div class="rule-item">
-            <strong>48 equipos</strong> organizados en <strong>12 grupos</strong> de 4
+            <strong>32 equipos</strong> en Ronda de 32 (16 encuentros)
           </div>
           <div class="rule-item">
-            Los <strong>primeros 2</strong> de cada grupo clasifican directamente (24 equipos)
+            <strong>16 equipos</strong> en Cuartos de Final (8 encuentros)
           </div>
           <div class="rule-item">
-            Los <strong>8 mejores terceros</strong> también avanzan → Total <strong>32 equipos</strong>
+            <strong>8 equipos</strong> en Semifinales (4 encuentros)
           </div>
           <div class="rule-item">
-            Criterio de desempate: Puntos → DG → GF → Fairplay → Sorteo
+            <strong>4 equipos</strong> en Finales (3er lugar + Final)
           </div>
         </div>
       </div>
@@ -50,13 +52,17 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
               <div class="group-summary card">
                 <div class="group-badge">Grupo {{ group[0] }}</div>
                 @for (s of group[1]; track s.team.id; let i = $index) {
-                  <div class="summary-row" [class.qualified]="i < 2" [class.third]="i === 2">
+                  <div class="summary-row" [class.qualified]="i < 2" [class.third]="i === 2" [class.eliminated]="i > 2" >
                     <span class="pos">{{ i + 1 }}</span>
-                    <span class="flag-sm">{{ s.team.flagEmoji }}</span>
+                    <img class="flag-img flag-sm"
+                          [src]="s.team.code | flagUrl"
+                          [alt]="s.team.name"
+                          loading="lazy">
                     <span class="team-sm">{{ s.team.code }}</span>
                     <span class="pts-sm">{{ s.points }}pts</span>
                     @if (i < 2) { <span class="badge-sm green">✓</span> }
                     @if (i === 2) { <span class="badge-sm gold">?</span> }
+                    @if (i > 2) { <span class="badge-sm red">✗</span> }
                   </div>
                 }
               </div>
@@ -66,20 +72,22 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
 
         <!-- Round of 32 bracket -->
         <section class="section">
-          <h2 class="section-title">🥊 RONDA DE 32 — ENCUENTROS</h2>
+          <h2 class="section-title">🥊 RONDA DE 32 — 16 ENCUENTROS</h2>
           <p class="text-muted" style="margin-bottom:20px;font-size:13px">
             Los emparejamientos se actualizan en tiempo real según los resultados de la fase de grupos.
-            Los 3er lugares restantes se asignan tras conocer los 8 mejores.
           </p>
           <div class="bracket-grid">
-            @for (slot of slots(); track slot.slotLabel; let i = $index) {
+            @for (slot of getSlotsByRound(32); track slot.slotLabel) {
               <div class="bracket-match card" [class.resolved]="slot.resolved">
-                <div class="bracket-num">{{ i + 1 }}</div>
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
                 <div class="bracket-label">{{ slot.slotLabel }}</div>
                 <div class="bracket-teams">
                   <div class="bracket-team" [class.tbd]="!slot.homeTeam">
                     @if (slot.homeTeam) {
-                      <span class="flag">{{ slot.homeTeam.flagEmoji }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
                       <span>{{ slot.homeTeam.name }}</span>
                       <span class="code">{{ slot.homeTeam.code }}</span>
                     } @else {
@@ -92,7 +100,10 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
                     @if (slot.awayTeam) {
                       <span class="code">{{ slot.awayTeam.code }}</span>
                       <span>{{ slot.awayTeam.name }}</span>
-                      <span class="flag">{{ slot.awayTeam.flagEmoji }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
                     } @else {
                       <span class="text-muted">Por definir</span>
                       <span class="tbd-flag">❓</span>
@@ -103,10 +114,273 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
                   @if (slot.resolved) {
                     <span class="badge badge-green" style="font-size:10px">Definido</span>
                   } @else {
-                    <span class="badge badge-muted" style="font-size:10px">Pendiente resultados</span>
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
                   }
                 </div>
               </div>
+            }
+          </div>
+        </section>
+
+        <!-- Round of 16 bracket -->
+        <section class="section">
+          <h2 class="section-title">🏆 OCTAVOS DE FINAL — 8 ENCUENTROS</h2>
+          <p class="text-muted" style="margin-bottom:20px;font-size:13px">
+            Los emparejamientos se actualizan en tiempo real según los resultados de la fase de 16AVOS.
+          </p>
+          <div class="bracket-grid">
+            @for (slot of getSlotsByRound(16); track slot.slotLabel) {
+              <div class="bracket-match card" [class.resolved]="slot.resolved">
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
+                <div class="bracket-label">{{ slot.slotLabel }}</div>
+                <div class="bracket-teams">
+                  <div class="bracket-team" [class.tbd]="!slot.homeTeam">
+                    @if (slot.homeTeam) {
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
+                      <span>{{ slot.homeTeam.name }}</span>
+                      <span class="code">{{ slot.homeTeam.code }}</span>
+                    } @else {
+                      <span class="tbd-flag">❓</span>
+                      <span class="text-muted">Por definir</span>
+                    }
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="bracket-team away" [class.tbd]="!slot.awayTeam">
+                    @if (slot.awayTeam) {
+                      <span class="code">{{ slot.awayTeam.code }}</span>
+                      <span>{{ slot.awayTeam.name }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
+                    } @else {
+                      <span class="text-muted">Por definir</span>
+                      <span class="tbd-flag">❓</span>
+                    }
+                  </div>
+                </div>
+                <div class="bracket-status">
+                  @if (slot.resolved) {
+                    <span class="badge badge-green" style="font-size:10px">Definido</span>
+                  } @else {
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+        
+        <!-- Round of 8 bracket -->
+        <section class="section">
+          <h2 class="section-title">🏆 CUARTOS DE FINAL — 4 ENCUENTROS</h2>
+          <p class="text-muted" style="margin-bottom:20px;font-size:13px">
+            Los emparejamientos se actualizan en tiempo real según los resultados de la fase de 8AVOS.
+          </p>
+          <div class="bracket-grid">
+            @for (slot of getSlotsByRound(8); track slot.slotLabel) {
+              <div class="bracket-match card" [class.resolved]="slot.resolved">
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
+                <div class="bracket-label">{{ slot.slotLabel }}</div>
+                <div class="bracket-teams">
+                  <div class="bracket-team" [class.tbd]="!slot.homeTeam">
+                    @if (slot.homeTeam) {
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
+                      <span>{{ slot.homeTeam.name }}</span>
+                      <span class="code">{{ slot.homeTeam.code }}</span>
+                    } @else {
+                      <span class="tbd-flag">❓</span>
+                      <span class="text-muted">Por definir</span>
+                    }
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="bracket-team away" [class.tbd]="!slot.awayTeam">
+                    @if (slot.awayTeam) {
+                      <span class="code">{{ slot.awayTeam.code }}</span>
+                      <span>{{ slot.awayTeam.name }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
+                    } @else {
+                      <span class="text-muted">Por definir</span>
+                      <span class="tbd-flag">❓</span>
+                    }
+                  </div>
+                </div>
+                <div class="bracket-status">
+                  @if (slot.resolved) {
+                    <span class="badge badge-green" style="font-size:10px">Definido</span>
+                  } @else {
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Semifinals bracket -->
+        <section class="section">
+          <h2 class="section-title">⭐ SEMIFINALES — 4 ENCUENTROS</h2>
+          <p class="text-muted" style="margin-bottom:20px;font-size:13px">
+            Los emparejamientos se actualizan en tiempo real según los resultados de la fase de CUARTOS.
+          </p>
+          <div class="bracket-grid">
+            @for (slot of getSlotsByRound(4); track slot.slotLabel) {
+              <div class="bracket-match card" [class.resolved]="slot.resolved">
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
+                <div class="bracket-label">{{ slot.slotLabel }}</div>
+                <div class="bracket-teams">
+                  <div class="bracket-team" [class.tbd]="!slot.homeTeam">
+                    @if (slot.homeTeam) {
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
+                      <span>{{ slot.homeTeam.name }}</span>
+                      <span class="code">{{ slot.homeTeam.code }}</span>
+                    } @else {
+                      <span class="tbd-flag">❓</span>
+                      <span class="text-muted">Por definir</span>
+                    }
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="bracket-team away" [class.tbd]="!slot.awayTeam">
+                    @if (slot.awayTeam) {
+                      <span class="code">{{ slot.awayTeam.code }}</span>
+                      <span>{{ slot.awayTeam.name }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
+                    } @else {
+                      <span class="text-muted">Por definir</span>
+                      <span class="tbd-flag">❓</span>
+                    }
+                  </div>
+                </div>
+                <div class="bracket-status">
+                  @if (slot.resolved) {
+                    <span class="badge badge-green" style="font-size:10px">Definido</span>
+                  } @else {
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Finals bracket -->
+        <section class="section">
+          <h2 class="section-title">🥉 3er LUGAR </h2>
+          <p class="text-muted" style="margin-bottom:20px;font-size:13px">
+            Los emparejamientos se actualizan en tiempo real según los resultados de la fase de SEMIFINALES.
+          </p>
+          <div class="bracket-grid">
+            @for (slot of getSlotsByRound(1); track slot.slotLabel) {
+              @if (slot.matchNumber === 103) {
+              <div class="bracket-match card" [class.resolved]="slot.resolved">
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
+                <div class="bracket-label">{{ slot.slotLabel }}</div>
+                <div class="bracket-teams">
+                  <div class="bracket-team" [class.tbd]="!slot.homeTeam">
+                    @if (slot.homeTeam) {
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
+                      <span>{{ slot.homeTeam.name }}</span>
+                      <span class="code">{{ slot.homeTeam.code }}</span>
+                    } @else {
+                      <span class="tbd-flag">❓</span>
+                      <span class="text-muted">Por definir</span>
+                    }
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="bracket-team away" [class.tbd]="!slot.awayTeam">
+                    @if (slot.awayTeam) {
+                      <span class="code">{{ slot.awayTeam.code }}</span>
+                      <span>{{ slot.awayTeam.name }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
+                    } @else {
+                      <span class="text-muted">Por definir</span>
+                      <span class="tbd-flag">❓</span>
+                    }
+                  </div>
+                </div>
+                <div class="bracket-status">
+                  @if (slot.resolved) {
+                    <span class="badge badge-green" style="font-size:10px">Definido</span>
+                  } @else {
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
+                  }
+                </div>
+              </div>
+              }
+            }
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">👑 FINAL </h2>
+          <p class="text-muted" style="margin-bottom:20px;font-size:13px">
+            Los emparejamientos se actualizan en tiempo real según los resultados de la fase de SEMIFINALES.
+          </p>
+          <div class="bracket-grid">
+            @for (slot of getSlotsByRound(1); track slot.slotLabel) {
+              @if(slot.matchNumber  ==104) {
+              <div class="bracket-match card" [class.resolved]="slot.resolved">
+                <div class="bracket-num">{{ slot.matchNumber }}</div>
+                <div class="bracket-label">{{ slot.slotLabel }}</div>
+                <div class="bracket-teams">
+                  <div class="bracket-team" [class.tbd]="!slot.homeTeam">
+                    @if (slot.homeTeam) {
+                      <img class="flag-img flag-sm"
+                          [src]="slot.homeTeam.code | flagUrl"
+                          [alt]="slot.homeTeam.name"
+                          loading="lazy">
+                      <span>{{ slot.homeTeam.name }}</span>
+                      <span class="code">{{ slot.homeTeam.code }}</span>
+                    } @else {
+                      <span class="tbd-flag">❓</span>
+                      <span class="text-muted">Por definir</span>
+                    }
+                  </div>
+                  <div class="vs-divider">vs</div>
+                  <div class="bracket-team away" [class.tbd]="!slot.awayTeam">
+                    @if (slot.awayTeam) {
+                      <span class="code">{{ slot.awayTeam.code }}</span>
+                      <span>{{ slot.awayTeam.name }}</span>
+                      <img class="flag-img flag-sm"
+                          [src]="slot.awayTeam.code | flagUrl"
+                          [alt]="slot.awayTeam.name"
+                          loading="lazy">
+                    } @else {
+                      <span class="text-muted">Por definir</span>
+                      <span class="tbd-flag">❓</span>
+                    }
+                  </div>
+                </div>
+                <div class="bracket-status">
+                  @if (slot.resolved) {
+                    <span class="badge badge-green" style="font-size:10px">Definido</span>
+                  } @else {
+                    <span class="badge badge-muted" style="font-size:10px">Pendiente</span>
+                  }
+                </div>
+              </div>
+              }
             }
           </div>
         </section>
@@ -138,7 +412,10 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
                       <td>{{ i + 1 }}</td>
                       <td>
                         <div class="team-cell">
-                          {{ s.team.flagEmoji }} {{ s.team.name }}
+                          <img class="flag-img flag-sm"
+                          [src]="s.team.code | flagUrl"
+                          [alt]="s.team.name"
+                          loading="lazy"> {{ s.team.name }}
                         </div>
                       </td>
                       <td><span class="badge badge-muted">{{ s.group }}</span></td>
@@ -208,12 +485,23 @@ import { GroupStandings, KnockoutSlot } from '../../models/models';
     .summary-row:last-child { border-bottom: none; }
     .summary-row.qualified { background: transparent; }
     .pos { width: 14px; text-align: center; color: var(--c-muted); font-size: 11px; }
-    .flag-sm { font-size: 18px; }
+
+    /* Flags — image-based, universal browser support */
+    .flag-img {
+      width: 80px; height: 53px;
+      object-fit: cover;
+      border-radius: 3px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.5);
+      flex-shrink: 0;
+      display: block;
+    }
+    .flag-img.flag-sm { width: 26px; height: 20px; font-size: 18px; }
     .team-sm { flex: 1; font-weight: 600; font-family: var(--font-mono); font-size: 12px; }
     .pts-sm { color: var(--c-muted); font-size: 11px; }
     .badge-sm { font-size: 10px; font-weight: 700; }
     .badge-sm.green { color: var(--c-green); }
     .badge-sm.gold  { color: var(--c-accent); }
+    .badge-sm.red   { color: var(--c-accent2); }
 
     /* Bracket */
     .bracket-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
@@ -268,7 +556,6 @@ export class EliminatoriasComponent implements OnInit {
     this.api.getAllStandings().subscribe(s => {
       this.standingsMap.set(s);
       this.groupEntries.set(Object.entries(s).sort());
-      // Collect all 3rd place teams
       const thirds = Object.entries(s)
         .filter(([, standings]) => standings.length >= 3)
         .map(([, standings]) => standings[2])
@@ -279,9 +566,23 @@ export class EliminatoriasComponent implements OnInit {
       this.thirdPlaces.set(thirds);
     });
 
-    this.api.getRoundOf32().subscribe({
+    this.api.getAllKnockoutSlots().subscribe({
       next: s => this.slots.set(s),
       complete: () => this.loading.set(false)
     });
+  }
+
+  getSlotsByRound(round: number): KnockoutSlot[] {
+    return this.slots().filter(slot => this.getRoundFromSlotLabel(slot.matchNumber) === round);
+  }
+
+  private getRoundFromSlotLabel(label: number): number {
+    
+    if (label<89) return 32;
+    if (label<97) return 16;
+    if (label<101) return 8;
+    if (label<103) return 4;
+    if (label===103 || label===104) return 1;
+    return 0;
   }
 }

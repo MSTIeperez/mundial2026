@@ -47,6 +47,7 @@ export interface Standing {
 }
 
 export interface KnockoutSlot {
+  matchNumber: number;
   slotLabel: string;
   homeTeam: TeamInfo | null;
   awayTeam: TeamInfo | null;

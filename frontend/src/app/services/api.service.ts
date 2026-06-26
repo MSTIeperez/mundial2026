@@ -21,12 +21,15 @@ export class ApiService {
     return this.http.put(`${this.API}/matches/${matchId}/score`, { homeScore, awayScore });
   }
 
+  getKnockoutMatches(phase: string) {
+    return this.http.get<Match[]>(`${this.API}/knockout/${phase}`);
+  }
   // ─── Standings ───────────────────────────────────────────────────────
   getAllStandings() {
     return this.http.get<GroupStandings>(`${this.API}/standings`);
   }
 
-  getRoundOf32() {
-    return this.http.get<KnockoutSlot[]>(`${this.API}/standings/round-of-32`);
+  getAllKnockoutSlots() {
+    return this.http.get<KnockoutSlot[]>(`${this.API}/standings/knockout-slots`);
   }
 }

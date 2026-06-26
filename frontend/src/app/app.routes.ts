@@ -17,5 +17,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/eliminatorias/eliminatorias.component').then(m => m.EliminatoriasComponent)
   },
+  {
+    path: 'partidos-eliminatorios',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/eliminatorias/partidos.component').then(m => m.PartidosComponent)
+  },
   { path: '**', redirectTo: 'grupos' }
 ];

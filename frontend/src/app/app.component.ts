@@ -21,6 +21,9 @@ import { AuthService } from './services/auth.service';
             <a routerLink="/eliminatorias" routerLinkActive="active" class="nav-link">
               🥊 Eliminatorias
             </a>
+            <a routerLink="/partidos-eliminatorios" routerLinkActive="active" class="nav-link">
+              ⚽ Partidos Eliminatorios
+            </a>
           </div>
           <div class="nav-user">
             <span class="user-chip">

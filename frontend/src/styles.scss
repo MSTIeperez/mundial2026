@@ -130,9 +130,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: .04em; }
 }
 .standings-table td:first-child { text-align: left; }
 .standings-table tr:last-child td { border-bottom: none; }
-.standings-table tr:nth-child(1) td:first-child { border-left: 3px solid var(--c-green); }
-.standings-table tr:nth-child(2) td:first-child { border-left: 3px solid var(--c-green); }
-.standings-table tr:nth-child(3) td:first-child { border-left: 3px solid var(--c-accent); }
+.standings-table tr:nth-child(n+1):nth-child(-n+8) td:first-child { border-left: 3px solid var(--c-green); }
 
 /* ─── Notification ───────────────────────────────────────────────── */
 .toast {
