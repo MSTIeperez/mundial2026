@@ -288,11 +288,10 @@ public static class DbSeeder
                 Phase = km.Phase,
                 Group = "",
                 MatchDay = 0,
-                HomeTeamId = 1, // ID temporal/placeholder (1 y 2 asumiendo que existen)
-                AwayTeamId = 2, // Se debe actualizar conforme se clasifiquen los equipos
                 MatchDate = km.Date,
                 Venue = km.Venue,
-                SlotLabel = km.SlotLabel
+                SlotLabel = km.SlotLabel,
+
             });
         }
 

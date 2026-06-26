@@ -10,6 +10,7 @@ public interface IMatchService
     Task<List<MatchDto>> GetGroupMatchesAsync(string group);
     Task<List<MatchDto>> GetAllGroupMatchesAsync();
     Task<List<MatchDto>> GetKnockoutMatchesAsync(string phase);
+    Task<List<MatchDto>> GetAllKnockoutMatchesAsync();
     Task<bool> UpdateMatchScoreAsync(int matchId, int homeScore, int awayScore, int userId);
 }
 
@@ -55,6 +56,17 @@ public class MatchService : IMatchService
             .Include(m => m.HomeTeam)
             .Include(m => m.AwayTeam)
             .Where(m => m.Phase == phase)
+            .OrderBy(m => m.MatchDate)
+            .Select(m => ToDto(m))
+            .ToListAsync();
+    }
+
+    public async Task<List<MatchDto>> GetAllKnockoutMatchesAsync()
+    {
+        return await _db.Matches
+            .Include(m => m.HomeTeam)
+            .Include(m => m.AwayTeam)
+            .Where(m => m.Phase != "group")
             .OrderBy(m => m.MatchDate)
             .Select(m => ToDto(m))
             .ToListAsync();

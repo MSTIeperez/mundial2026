@@ -64,6 +64,10 @@ public class MatchesController : ControllerBase
     public async Task<IActionResult> GetKnockoutMatches(string phase)
         => Ok(await _matches.GetKnockoutMatchesAsync(phase));
 
+    [HttpGet("knockout")]
+        public async Task<IActionResult> GetAllKnockoutMatches()
+            => Ok(await _matches.GetAllKnockoutMatchesAsync());
+
     [HttpPut("{id}/score")]
     public async Task<IActionResult> UpdateScore(int id, [FromBody] ScoreRequest req)
     {
