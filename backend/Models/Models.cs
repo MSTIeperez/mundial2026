@@ -38,6 +38,7 @@ public class Match
     public string? SlotLabel { get; set; } // e.g. "1A vs 2B"
     public int? UpdatedByUserId { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public int MatchNumber { get; set; } // Sequential match number for scheduling
 }
 
 public class GroupStanding

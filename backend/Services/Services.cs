@@ -14,7 +14,7 @@ public interface IMatchService
 }
 
 public record MatchDto(
-    int Id, string Phase, string Group, int MatchDay,
+    int Id, int MatchNumber, string Phase, string Group, int MatchDay,
     TeamInfo HomeTeam, TeamInfo AwayTeam,
     int? HomeScore, int? AwayScore, bool Played,
     DateTime MatchDate, string Venue, string? SlotLabel);
@@ -76,7 +76,7 @@ public class MatchService : IMatchService
     }
 
     private static MatchDto ToDto(Match m) => new(
-        m.Id, m.Phase, m.Group, m.MatchDay,
+        m.Id, m.MatchNumber, m.Phase, m.Group, m.MatchDay,
         new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji),
         new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji),
         m.HomeScore, m.AwayScore, m.Played,
@@ -88,7 +88,7 @@ public interface IStandingsService
 {
     Task<List<StandingDto>> GetGroupStandingsAsync(string group);
     Task<Dictionary<string, List<StandingDto>>> GetAllStandingsAsync();
-    Task<List<KnockoutSlotDto>> GetRoundOf32SlotsAsync();
+    Task<List<KnockoutSlotDto>> GetAllKnockoutSlotsAsync();
 }
 
 public record StandingDto(
@@ -96,7 +96,7 @@ public record StandingDto(
     int Played, int Won, int Drawn, int Lost,
     int GoalsFor, int GoalsAgainst, int GoalDifference, int Points);
 
-public record KnockoutSlotDto(string SlotLabel, TeamInfo? HomeTeam, TeamInfo? AwayTeam, bool Resolved);
+public record KnockoutSlotDto(int MatchNumber, string SlotLabel, TeamInfo? HomeTeam, TeamInfo? AwayTeam, bool Resolved);
 
 public class StandingsService : IStandingsService
 {
@@ -134,13 +134,13 @@ public class StandingsService : IStandingsService
         return result;
     }
 
-    public async Task<List<KnockoutSlotDto>> GetRoundOf32SlotsAsync()
+    public async Task<List<KnockoutSlotDto>> GetAllKnockoutSlotsAsync()
     {
         // Get standings for all groups
         var allStandings = await GetAllStandingsAsync();
-        var r32Matches = await _db.Matches
+        var knockoutMatches = await _db.Matches
             .Include(m => m.HomeTeam).Include(m => m.AwayTeam)
-            .Where(m => m.Phase == "round_of_32")
+            .Where(m => m.Phase != "group")
             .OrderBy(m => m.MatchDate)
             .ToListAsync();
 
@@ -153,28 +153,35 @@ public class StandingsService : IStandingsService
             .ThenByDescending(s => s.GoalsFor)
             .ToList();
 
-        var slots = r32Matches.Select(m => new KnockoutSlotDto(
-            m.SlotLabel ?? "",
-            m.HomeTeamId > 0 && m.HomeTeam != null && m.HomeTeam.Id != 1 ?
-                new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji) : null,
-            m.AwayTeamId > 0 && m.AwayTeam != null && m.AwayTeam.Id != 2 ?
-                new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji) : null,
-            false
-        )).ToList();
-
         // Resolve slots based on current standings
         var resolvedSlots = new List<KnockoutSlotDto>();
-        foreach (var slot in slots)
+        foreach (var m in knockoutMatches)
         {
-            var (home, away) = ResolveSlot(slot.SlotLabel, allStandings, thirdPlace);
-            resolvedSlots.Add(new KnockoutSlotDto(slot.SlotLabel, home, away, home != null && away != null));
+            // 1. Intentamos resolver quién juega usando las reglas de llaves (Ej. "1A vs 2B")
+            var (home, away) = ResolveSlot(m.MatchNumber, m.SlotLabel ?? "", allStandings, thirdPlace);
+
+            // 2. Si aún no se resuelve, mantenemos los placeholders de la base de datos (si existen)
+            var finalHome = home ?? (m.HomeTeamId > 0 && m.HomeTeam != null && m.HomeTeam.Id != 1 ? 
+                new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji) : null);
+                
+            var finalAway = away ?? (m.AwayTeamId > 0 && m.AwayTeam != null && m.AwayTeam.Id != 2 ? 
+                new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji) : null);
+
+            // 3. Agregamos el DTO con su MatchNumber
+            resolvedSlots.Add(new KnockoutSlotDto(
+                m.MatchNumber,             // <-- Pasamos el número de partido al frontend
+                m.SlotLabel ?? "", 
+                finalHome, 
+                finalAway, 
+                finalHome != null && finalAway != null
+            ));
         }
 
         return resolvedSlots;
     }
 
     private (TeamInfo? home, TeamInfo? away) ResolveSlot(
-        string slotLabel,
+        int matchNumber, string slotLabel,
         Dictionary<string, List<StandingDto>> standings,
         List<StandingDto> thirdPlace)
     {

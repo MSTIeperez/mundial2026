@@ -93,7 +93,7 @@ public class StandingsController : ControllerBase
     public async Task<IActionResult> GetGroup(string group)
         => Ok(await _standings.GetGroupStandingsAsync(group));
 
-    [HttpGet("round-of-32")]
-    public async Task<IActionResult> GetRoundOf32()
-        => Ok(await _standings.GetRoundOf32SlotsAsync());
+    [HttpGet("knockout-slots")]
+    public async Task<IActionResult> GetAllKnockoutSlots()
+        => Ok(await _standings.GetAllKnockoutSlotsAsync());
 }
