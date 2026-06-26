@@ -40,7 +40,6 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
 
             @for (day of matchDays(); track day) {
               <div class="matchday-block">
-                <div class="matchday-label">Jornada {{ day }}</div>
 
                 @for (match of matchesByDay()[day]; track match.id) {
                   <div class="match-card" [class.played]="match.played" [class.live]="isLive(match.matchDate)">
@@ -121,7 +120,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
             }
           </section>
 
-          <section class="standings-panel">
+          <!-- <section class="standings-panel">
             <h2 class="panel-title">📊 TABLA DE POSICIONES</h2>
 
             @if (currentStandings().length > 0) {
@@ -183,7 +182,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                 <p>Registra resultados para ver la tabla</p>
               </div>
             }
-          </section>
+          </section> -->
         </div>
       }
     </div>
@@ -328,7 +327,15 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
   `]
 })
 export class PartidosComponent implements OnInit {
-  groupLetters = '16vos,8vos,4tos,Semifinales,Final'.split(',');
+  groupLetters = '16vos,8vos,4tos,Semifinales,3ro,Final'.split(',');
+  phaseLabels: Record<string, string> = {
+    '16vos': 'round_of_32',
+    '8vos': 'round_of_16',
+    '4tos': 'quarterfinals',
+    'Semifinales': 'semifinals',
+    '3ro': 'third_place',
+    'Final': 'final'
+  };
   activeGroup = signal('16vos');
   loading = signal(true);
   saving = signal(false);
@@ -345,7 +352,7 @@ export class PartidosComponent implements OnInit {
   canEdit = computed(() => this.auth.isAdmin());
 
   groupMatches = computed(() =>
-    this.allMatches().filter(m => m.phase === this.activeGroup()));
+    this.allMatches().filter(m => m.phase === this.phaseLabels[this.activeGroup()]));
 
   matchDays = computed(() =>
     [...new Set(this.groupMatches().map(m => m.matchDay))].sort());
@@ -358,15 +365,15 @@ export class PartidosComponent implements OnInit {
     return map;
   });
 
-  currentStandings = computed(() =>
-    this.standings()[this.activeGroup()] ?? []);
+  // currentStandings = computed(() =>
+  //   this.standings()[this.activeGroup()] ?? []);
 
   ngOnInit() {
-    this.api.getKnockoutMatches(this.activeGroup()).subscribe({
+    this.api.getAllKnockoutMatches().subscribe({
       next: m => this.allMatches.set(m),
       complete: () => this.loading.set(false)
     });
-    this.api.getAllStandings().subscribe(s => this.standings.set(s));
+    //this.api.getAllStandings().subscribe(s => this.standings.set(s));
   }
 
   isLive(matchDate: Date | string): boolean {
@@ -403,7 +410,7 @@ export class PartidosComponent implements OnInit {
         this.editingId.set(null);
         this.saving.set(false);
         this.showToast('✅ Resultado guardado', 'success');
-        this.api.getAllStandings().subscribe(s => this.standings.set(s));
+      //  this.api.getAllStandings().subscribe(s => this.standings.set(s));
       },
       error: () => {
         this.saving.set(false);

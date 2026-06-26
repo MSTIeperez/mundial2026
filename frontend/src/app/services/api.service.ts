@@ -22,8 +22,13 @@ export class ApiService {
   }
 
   getKnockoutMatches(phase: string) {
-    return this.http.get<Match[]>(`${this.API}/knockout/${phase}`);
+    return this.http.get<Match[]>(`${this.API}/matches/knockout/${phase}`);
   }
+
+   getAllKnockoutMatches() {
+    return this.http.get<Match[]>(`${this.API}/matches/knockout`);
+  }
+
   // ─── Standings ───────────────────────────────────────────────────────
   getAllStandings() {
     return this.http.get<GroupStandings>(`${this.API}/standings`);
