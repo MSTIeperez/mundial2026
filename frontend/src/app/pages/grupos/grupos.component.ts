@@ -11,7 +11,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
 @Component({
   selector: 'app-grupos',
   standalone: true,
-  imports: [FormsModule, FlagUrlPipe,DatePipe],
+  imports: [FormsModule, FlagUrlPipe, DatePipe],
   template: `
     <div class="page">
       <header class="page-header" [class.sticky]="true">
@@ -43,13 +43,17 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                 <div class="matchday-label">Jornada {{ day }}</div>
 
                 @for (match of matchesByDay()[day]; track match.id) {
-                  <div class="match-card" [class.played]="match.played">
+                  <div class="match-card" [class.played]="match.played" [class.live]="isLive(match.matchDate)">
                     <div class="match-meta">
                       <span class="text-muted" style="font-size:11px">{{ match.venue }}</span>
                       <span class="match-date">{{ match.matchDate | date:'dd/MM/yyyy hh:mm' }}</span>
-                      <span class="badge" [class]="match.played ? 'badge-green' : 'badge-muted'">
-                        {{ match.played ? 'Jugado' : 'Pendiente' }}
-                      </span>
+                      @if (isLive(match.matchDate)) {
+                        <span class="badge badge-live">🔴 En vivo</span>
+                      } @else {
+                        <span class="badge" [class]="match.played ? 'badge-green' : 'badge-muted'">
+                          {{ match.played ? 'Jugado' : 'Pendiente' }}
+                        </span>
+                      }
                     </div>
 
                     <div class="match-body">
@@ -248,6 +252,12 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
     }
     .match-card:hover { border-color: var(--c-accent); }
     .match-card.played { border-left: 3px solid var(--c-green); }
+    .match-card.live { border-left: 3px solid #ff0000; animation: pulse 1.5s infinite; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
 
     .match-meta {
       display: flex; justify-content: space-between;
@@ -303,6 +313,8 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
     .legend-item.green { color: var(--c-green); }
     .legend-item.gold  { color: var(--c-accent); }
 
+    .badge-live { background: rgba(255,0,0,.2) !important; color: #ff0000 !important; }
+
     .empty-state { text-align: center; padding: 40px; color: var(--c-muted); font-size: 13px; }
 
     @media (max-width: 1024px) {
@@ -355,6 +367,14 @@ export class GruposComponent implements OnInit {
       complete: () => this.loading.set(false)
     });
     this.api.getAllStandings().subscribe(s => this.standings.set(s));
+  }
+
+  isLive(matchDate: Date | string): boolean {
+    const now = new Date();
+    const match = new Date(matchDate);
+    const diffMs = Math.abs(now.getTime() - match.getTime());
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    return diffMinutes < 120;
   }
 
   startEdit(match: Match) {
