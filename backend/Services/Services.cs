@@ -15,10 +15,19 @@ public interface IMatchService
 }
 
 public record MatchDto(
-    int Id, int MatchNumber, string Phase, string Group, int MatchDay,
-    TeamInfo HomeTeam, TeamInfo AwayTeam,
-    int? HomeScore, int? AwayScore, bool Played,
-    DateTime MatchDate, string Venue, string? SlotLabel);
+    int Id,
+    int MatchNumber,        // En grupos = MatchDay (1-3); en eliminatorias = número FIFA (73-88)
+    string Phase,
+    string Group,
+    int MatchDay,
+    TeamInfo? HomeTeam,     // Nullable: null cuando el equipo aún no clasificó
+    TeamInfo? AwayTeam,     // Nullable: null cuando el equipo aún no clasificó
+    int? HomeScore,
+    int? AwayScore,
+    bool Played,
+    DateTime MatchDate,
+    string Venue,
+    string? SlotLabel);
 
 public record TeamInfo(int Id, string Name, string Code, string FlagEmoji);
 
@@ -87,10 +96,20 @@ public class MatchService : IMatchService
         return true;
     }
 
+    // FIX 1: MatchNumber = MatchDay (el seeder guarda el número FIFA 73-88 en MatchDay para eliminatorias)
+    // FIX 2: HomeTeam / AwayTeam son null en partidos eliminatorios pendientes → null-safe
     private static MatchDto ToDto(Match m) => new(
-        m.Id, m.MatchNumber, m.Phase, m.Group, m.MatchDay,
-        new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji),
-        new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji),
+        m.Id,
+        m.MatchDay,   // MatchDay almacena: jornada (1-3) en grupos, número FIFA (73-88) en eliminatorias
+        m.Phase,
+        m.Group,
+        m.MatchDay,
+        m.HomeTeam != null
+            ? new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji)
+            : null,
+        m.AwayTeam != null
+            ? new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji)
+            : null,
         m.HomeScore, m.AwayScore, m.Played,
         m.MatchDate, m.Venue, m.SlotLabel);
 }
@@ -108,7 +127,12 @@ public record StandingDto(
     int Played, int Won, int Drawn, int Lost,
     int GoalsFor, int GoalsAgainst, int GoalDifference, int Points);
 
-public record KnockoutSlotDto(int MatchNumber, string SlotLabel, TeamInfo? HomeTeam, TeamInfo? AwayTeam, bool Resolved);
+public record KnockoutSlotDto(
+    int MatchNumber,
+    string SlotLabel,
+    TeamInfo? HomeTeam,
+    TeamInfo? AwayTeam,
+    bool Resolved);
 
 public class StandingsService : IStandingsService
 {
@@ -148,7 +172,6 @@ public class StandingsService : IStandingsService
 
     public async Task<List<KnockoutSlotDto>> GetAllKnockoutSlotsAsync()
     {
-        // Get standings for all groups
         var allStandings = await GetAllStandingsAsync();
         var knockoutMatches = await _db.Matches
             .Include(m => m.HomeTeam).Include(m => m.AwayTeam)
@@ -156,97 +179,121 @@ public class StandingsService : IStandingsService
             .OrderBy(m => m.MatchDate)
             .ToListAsync();
 
-        // Get best 3rd-place teams across all groups
+        // Mejores 3eros ordenados por criterios FIFA
         var thirdPlace = allStandings.Values
             .Where(s => s.Count >= 3)
-            .Select(s => s[2]) // 3rd in each group
+            .Select(s => s[2])
             .OrderByDescending(s => s.Points)
             .ThenByDescending(s => s.GoalDifference)
             .ThenByDescending(s => s.GoalsFor)
             .ToList();
 
-        // Resolve slots based on current standings
         var resolvedSlots = new List<KnockoutSlotDto>();
         foreach (var m in knockoutMatches)
         {
-            // 1. Intentamos resolver quién juega usando las reglas de llaves (Ej. "1A vs 2B")
-            var (home, away) = ResolveSlot(m.MatchNumber, m.SlotLabel ?? "", allStandings, thirdPlace);
+            // FIX 1: MatchNumber = MatchDay (el seeder guarda el número FIFA en MatchDay)
+            var matchNum = m.MatchDay;
 
-            // 2. Si aún no se resuelve, mantenemos los placeholders de la base de datos (si existen)
-            var finalHome = home ?? (m.HomeTeamId > 0 && m.HomeTeam != null && m.HomeTeam.Id != 1 ? 
-                new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji) : null);
-                
-            var finalAway = away ?? (m.AwayTeamId > 0 && m.AwayTeam != null && m.AwayTeam.Id != 2 ? 
-                new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji) : null);
+            // 1. Resolver equipos por las reglas de llaves del SlotLabel
+            var (home, away) = ResolveSlot(m.SlotLabel ?? "", allStandings, thirdPlace);
 
-            // 3. Agregamos el DTO con su MatchNumber
+            // FIX 2: el fallback ya no compara con IDs hardcodeados (1/2),
+            //        solo verifica que el equipo exista en la BD (HomeTeamId != null)
+            var finalHome = home
+                ?? (m.HomeTeamId.HasValue && m.HomeTeam != null
+                    ? new TeamInfo(m.HomeTeam.Id, m.HomeTeam.Name, m.HomeTeam.Code, m.HomeTeam.FlagEmoji)
+                    : null);
+
+            var finalAway = away
+                ?? (m.AwayTeamId.HasValue && m.AwayTeam != null
+                    ? new TeamInfo(m.AwayTeam.Id, m.AwayTeam.Name, m.AwayTeam.Code, m.AwayTeam.FlagEmoji)
+                    : null);
+
             resolvedSlots.Add(new KnockoutSlotDto(
-                m.MatchNumber,             // <-- Pasamos el número de partido al frontend
-                m.SlotLabel ?? "", 
-                finalHome, 
-                finalAway, 
-                finalHome != null && finalAway != null
-            ));
+                matchNum,
+                m.SlotLabel ?? "",
+                finalHome,
+                finalAway,
+                finalHome != null && finalAway != null));
         }
 
         return resolvedSlots;
     }
 
     private (TeamInfo? home, TeamInfo? away) ResolveSlot(
-        int matchNumber, string slotLabel,
+        string slotLabel,
         Dictionary<string, List<StandingDto>> standings,
         List<StandingDto> thirdPlace)
     {
-        // Parse slot like "1A vs 2B"
         var parts = slotLabel.Split(" vs ");
         if (parts.Length != 2) return (null, null);
 
         TeamInfo? ResolveTeam(string token)
         {
             token = token.Trim();
+
+            // Formato "1A", "2B" → posición + grupo
             if (token.Length >= 2 && char.IsDigit(token[0]))
             {
-                var pos = int.Parse(token[0].ToString()) - 1;
-                var grp = token[1].ToString();
+                var pos = int.Parse(token[0].ToString()) - 1; // 0-based
+                var grp = token[1].ToString().ToUpper();
                 if (standings.TryGetValue(grp, out var st) && st.Count > pos)
                     return st[pos].Team;
+                return null;
             }
-            else if (token.StartsWith("3rd"))
+
+            // FIX 4: el formato del seeder es "3°(A/B/C/D/F)", no "3rd"
+            //        Soportamos ambos por compatibilidad
+            if (token.StartsWith("3°") || token.StartsWith("3rd") || token.StartsWith("3"))
             {
-                // Best 3rd place
-                return thirdPlace.FirstOrDefault()?.Team;
+                // Extraer grupos elegibles entre paréntesis: "3°(A/B/C/D/F)" → {A,B,C,D,F}
+                var eligible = new HashSet<string>();
+                var start = token.IndexOf('(');
+                var end   = token.IndexOf(')');
+                if (start >= 0 && end > start)
+                {
+                    var inner = token[(start + 1)..end];
+                    foreach (var g in inner.Split('/'))
+                        eligible.Add(g.Trim().ToUpper());
+                }
+
+                // Si no hay grupos entre paréntesis, devolver el mejor 3ero global
+                if (eligible.Count == 0)
+                    return thirdPlace.FirstOrDefault()?.Team;
+
+                // Mejor 3ero de entre los grupos elegibles para este slot
+                return thirdPlace.FirstOrDefault(s => eligible.Contains(s.Group))?.Team;
             }
+
             return null;
         }
 
         return (ResolveTeam(parts[0]), ResolveTeam(parts[1]));
     }
 
+    // FIX 5: HomeTeamId / AwayTeamId son int? → usar .HasValue y .Value antes de indexar
     private static List<StandingDto> CalculateStandings(
         string group, List<Team> teams, List<Match> matches)
     {
-        var stats = teams.ToDictionary(t => t.Id, t => new
+        var s = teams.ToDictionary(t => t.Id, _ => new int[6]); // W,D,L,GF,GA,Pts
+
+        foreach (var m in matches.Where(m =>
+            m.Played &&
+            m.HomeScore.HasValue &&
+            m.HomeTeamId.HasValue &&   // null-check: partido de grupos siempre tiene equipo
+            m.AwayTeamId.HasValue))
         {
-            Team = t,
-            W = 0, D = 0, L = 0, GF = 0, GA = 0, P = 0
-        });
+            var hg  = m.HomeScore!.Value;
+            var ag  = m.AwayScore!.Value;
+            var hId = m.HomeTeamId!.Value;
+            var aId = m.AwayTeamId!.Value;
 
-        // Mutable dict
-        var s = teams.ToDictionary(t => t.Id, _ => new int[6]); // W,D,L,GF,GA,P
+            s[hId][3] += hg; s[hId][4] += ag;
+            s[aId][3] += ag; s[aId][4] += hg;
 
-        foreach (var m in matches.Where(m => m.Played && m.HomeScore.HasValue))
-        {
-            var hg = m.HomeScore!.Value;
-            var ag = m.AwayScore!.Value;
-
-            s[m.HomeTeamId][3] += hg;
-            s[m.HomeTeamId][4] += ag;
-            s[m.AwayTeamId][3] += ag;
-            s[m.AwayTeamId][4] += hg;
-
-            if (hg > ag) { s[m.HomeTeamId][0]++; s[m.AwayTeamId][2]++; s[m.HomeTeamId][5] += 3; }
-            else if (hg == ag) { s[m.HomeTeamId][1]++; s[m.AwayTeamId][1]++; s[m.HomeTeamId][5]++; s[m.AwayTeamId][5]++; }
-            else { s[m.AwayTeamId][0]++; s[m.HomeTeamId][2]++; s[m.AwayTeamId][5] += 3; }
+            if      (hg > ag)  { s[hId][0]++; s[aId][2]++; s[hId][5] += 3; }
+            else if (hg == ag) { s[hId][1]++; s[aId][1]++; s[hId][5]++; s[aId][5]++; }
+            else               { s[aId][0]++; s[hId][2]++; s[aId][5] += 3; }
         }
 
         return teams

@@ -17,12 +17,14 @@ public class AppDbContext : DbContext
             .HasOne(m => m.HomeTeam)
             .WithMany()
             .HasForeignKey(m => m.HomeTeamId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Match>()
             .HasOne(m => m.AwayTeam)
             .WithMany()
             .HasForeignKey(m => m.AwayTeamId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<User>()

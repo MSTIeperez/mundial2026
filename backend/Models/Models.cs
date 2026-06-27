@@ -25,10 +25,10 @@ public class Match
     public string Phase { get; set; } = "group"; // group | round_of_16 | quarter | semi | third | final
     public string Group { get; set; } = ""; // A-L (only for group phase)
     public int MatchDay { get; set; } // 1, 2, 3 within group
-    public int HomeTeamId { get; set; }
-    public Team HomeTeam { get; set; } = null!;
-    public int AwayTeamId { get; set; }
-    public Team AwayTeam { get; set; } = null!;
+    public int? HomeTeamId { get; set; }
+    public Team? HomeTeam { get; set; } 
+    public int? AwayTeamId { get; set; }
+    public Team? AwayTeam { get; set; } 
     public int? HomeScore { get; set; }
     public int? AwayScore { get; set; }
     public bool Played { get; set; } = false;

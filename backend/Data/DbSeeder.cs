@@ -234,51 +234,51 @@ public static class DbSeeder
     //  4 cruces 2° vs mejor 2° de grupos diferentes
     // ===============================================================
     
-       var knockoutSchedule = new (string Phase, string SlotLabel, DateTime Date, string Venue)[]
+       var knockoutSchedule = new (int MatchNumber, string Phase, string SlotLabel, DateTime Date, string Venue)[]
         {
             // --- 16vos de Final (Round of 32) ---
-            ("round_of_32", "2A vs 2B", new DateTime(2026, 6, 28, 14, 0, 0), "SoFi Stadium, Los Angeles"),
-            ("round_of_32", "1E vs 3A/B/C/D/F", new DateTime(2026, 6, 29, 15,30, 0), "Gillette Stadium, Boston"),
-            ("round_of_32", "1F vs 3A/B/C/D/E", new DateTime(2026, 6, 29, 20, 0, 0), "Estadio BBVA, Monterrey"),
-            ("round_of_32", "1C vs 3A/B/D/E/F", new DateTime(2026, 6, 29, 12, 0, 0), "NRG Stadium, Houston"),
-            ("round_of_32", "1I vs 3C/D/E/F/G", new DateTime(2026, 6, 30, 16, 0, 0), "MetLife Stadium, New York/New Jersey"),
-            ("round_of_32", "2E vs 2F", new DateTime(2026, 6, 30, 12, 0, 0), "AT&T Stadium, Dallas"),
-            ("round_of_32", "1A vs 3C/E/F/H/I", new DateTime(2026, 6, 30, 20, 0, 0), "Estadio Azteca, Mexico City"),
-            ("round_of_32", "1L vs 3E/H/I/J/K", new DateTime(2026, 7, 1, 11, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
-            ("round_of_32", "1D vs 3B/E/F/I/J", new DateTime(2026, 7, 1, 19, 0, 0), "Levi's Stadium, San Francisco"),
-            ("round_of_32", "2G vs 2H", new DateTime(2026, 7, 1, 15, 0, 0), "Lumen Field, Seattle"),
-            ("round_of_32", "1G vs 3A/E/H/I/J", new DateTime(2026, 7, 2, 14, 0, 0), "SoFi Stadium, Los Angeles"),
-            ("round_of_32", "1B vs 3E/F/G/I/J", new DateTime(2026, 7, 2, 22, 0, 0), "BC Place, Vancouver"),
-            ("round_of_32", "1J vs 3A/B/F/G/H", new DateTime(2026, 7, 2, 18, 0, 0), "BMO Field, Toronto"),
-            ("round_of_32", "1H vs 3B/C/E/F/G", new DateTime(2026, 7, 3, 17, 0, 0), "Hard Rock Stadium, Miami"),
-            ("round_of_32", "1K vs 3D/E/I/J/L", new DateTime(2026, 7, 3, 20, 30, 0), "Arrowhead Stadium, Kansas City"),
-            ("round_of_32", "2I vs 2J", new DateTime(2026, 7, 3, 13, 0, 0), "AT&T Stadium, Dallas"),
+            (73, "round_of_32", "2A vs 2B", new DateTime(2026, 6, 28, 14, 0, 0), "SoFi Stadium, Los Angeles"),
+            (74, "round_of_32", "1E vs 3°(A/B/C/D/F)", new DateTime(2026, 6, 29, 15,30, 0), "Gillette Stadium, Boston"),
+            (75, "round_of_32", "1F vs 3°(A/B/C/D/E)", new DateTime(2026, 6, 29, 20, 0, 0), "Estadio BBVA, Monterrey"),
+            (76, "round_of_32", "1C vs 3°(A/B/D/E/F)", new DateTime(2026, 6, 29, 12, 0, 0), "NRG Stadium, Houston"),
+            (77, "round_of_32", "1I vs 3°(C/D/E/F/G)", new DateTime(2026, 6, 30, 16, 0, 0), "MetLife Stadium, New York/New Jersey"),
+            (78, "round_of_32", "2E vs 2F", new DateTime(2026, 6, 30, 12, 0, 0), "AT&T Stadium, Dallas"),
+            (79, "round_of_32", "1A vs 3°(C/E/F/H/I)", new DateTime(2026, 6, 30, 20, 0, 0), "Estadio Azteca, Mexico City"),
+            (80, "round_of_32", "1L vs 3°(E/H/I/J/K)", new DateTime(2026, 7, 1, 11, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (81, "round_of_32", "1D vs 3°(B/E/F/I/J)", new DateTime(2026, 7, 1, 19, 0, 0), "Levi's Stadium, San Francisco"),
+            (82, "round_of_32", "2G vs 2H", new DateTime(2026, 7, 1, 15, 0, 0), "Lumen Field, Seattle"),
+            (83, "round_of_32", "1G vs 3°(A/E/H/I/J)", new DateTime(2026, 7, 2, 14, 0, 0), "SoFi Stadium, Los Angeles"),
+            (84, "round_of_32", "1B vs 3°(E/F/G/I/J)", new DateTime(2026, 7, 2, 22, 0, 0), "BC Place, Vancouver"),
+            (85, "round_of_32", "1J vs 3°(A/B/F/G/H)", new DateTime(2026, 7, 2, 18, 0, 0), "BMO Field, Toronto"),
+            (86, "round_of_32", "1H vs 3°(B/C/E/F/G)", new DateTime(2026, 7, 3, 17, 0, 0), "Hard Rock Stadium, Miami"),
+            (87, "round_of_32", "1K vs 3°(D/E/I/J/L)", new DateTime(2026, 7, 3, 20, 30, 0), "Arrowhead Stadium, Kansas City"),
+            (88, "round_of_32", "2I vs 2J", new DateTime(2026, 7, 3, 13, 0, 0), "AT&T Stadium, Dallas"),
 
             // --- Octavos de Final (Round of 16) ---
-            ("round_of_16", "Ganador 74 vs Ganador 77", new DateTime(2026, 7, 4, 16, 0, 0), "Lincoln Financial Field, Philadelphia"),
-            ("round_of_16", "Ganador 73 vs Ganador 75", new DateTime(2026, 7, 4, 12, 0, 0), "NRG Stadium, Houston"),
-            ("round_of_16", "Ganador 76 vs Ganador 78", new DateTime(2026, 7, 5, 15, 0, 0), "MetLife Stadium, New York/New Jersey"),
-            ("round_of_16", "Ganador 79 vs Ganador 80", new DateTime(2026, 7, 5, 19, 0, 0), "Estadio Azteca, Mexico City"),
-            ("round_of_16", "Ganador 83 vs Ganador 84", new DateTime(2026, 7, 6, 14, 0, 0), "AT&T Stadium, Dallas"),
-            ("round_of_16", "Ganador 81 vs Ganador 82", new DateTime(2026, 7, 6, 19, 0, 0), "Lumen Field, Seattle"),
-            ("round_of_16", "Ganador 86 vs Ganador 88", new DateTime(2026, 7, 7, 11, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
-            ("round_of_16", "Ganador 85 vs Ganador 87", new DateTime(2026, 7, 7, 15, 0, 0), "BC Place, Vancouver"),
+            (89, "round_of_16", "Ganador 74 vs Ganador 77", new DateTime(2026, 7, 4, 16, 0, 0), "Lincoln Financial Field, Philadelphia"),
+            (90, "round_of_16", "Ganador 73 vs Ganador 75", new DateTime(2026, 7, 4, 12, 0, 0), "NRG Stadium, Houston"),
+            (91, "round_of_16", "Ganador 76 vs Ganador 78", new DateTime(2026, 7, 5, 15, 0, 0), "MetLife Stadium, New York/New Jersey"),
+            (92, "round_of_16", "Ganador 79 vs Ganador 80", new DateTime(2026, 7, 5, 19, 0, 0), "Estadio Azteca, Mexico City"),
+            (93, "round_of_16", "Ganador 83 vs Ganador 84", new DateTime(2026, 7, 6, 14, 0, 0), "AT&T Stadium, Dallas"),
+            (94, "round_of_16", "Ganador 81 vs Ganador 82", new DateTime(2026, 7, 6, 19, 0, 0), "Lumen Field, Seattle"),
+            (95, "round_of_16", "Ganador 86 vs Ganador 88", new DateTime(2026, 7, 7, 11, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (96, "round_of_16", "Ganador 85 vs Ganador 87", new DateTime(2026, 7, 7, 15, 0, 0), "BC Place, Vancouver"),
 
             // --- Cuartos de Final (Quarterfinals) ---
-            ("quarterfinals", "Ganador 89 vs Ganador 90", new DateTime(2026, 7, 9, 15, 0, 0), "Gillette Stadium, Boston"),
-            ("quarterfinals", "Ganador 93 vs Ganador 94", new DateTime(2026, 7, 10, 14, 0, 0), "SoFi Stadium, Los Angeles"),
-            ("quarterfinals", "Ganador 91 vs Ganador 92", new DateTime(2026, 7, 11, 16, 0, 0), "Hard Rock Stadium, Miami"),
-            ("quarterfinals", "Ganador 95 vs Ganador 96", new DateTime(2026, 7, 11, 20, 0, 0), "Arrowhead Stadium, Kansas City"),
+            (97, "quarterfinals", "Ganador 89 vs Ganador 90", new DateTime(2026, 7, 9, 15, 0, 0), "Gillette Stadium, Boston"),
+            (98, "quarterfinals", "Ganador 93 vs Ganador 94", new DateTime(2026, 7, 10, 14, 0, 0), "SoFi Stadium, Los Angeles"),
+            (99, "quarterfinals", "Ganador 91 vs Ganador 92", new DateTime(2026, 7, 11, 16, 0, 0), "Hard Rock Stadium, Miami"),
+            (100, "quarterfinals", "Ganador 95 vs Ganador 96", new DateTime(2026, 7, 11, 20, 0, 0), "Arrowhead Stadium, Kansas City"),
 
             // --- Semifinales (Semifinals) ---
-            ("semifinals", "Ganador 97 vs Ganador 98", new DateTime(2026, 7, 14, 14, 0, 0), "AT&T Stadium, Dallas"),
-            ("semifinals", "Ganador 99 vs Ganador 100", new DateTime(2026, 7, 15, 14, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
+            (101, "semifinals", "Ganador 97 vs Ganador 98", new DateTime(2026, 7, 14, 14, 0, 0), "AT&T Stadium, Dallas"),
+            (102, "semifinals", "Ganador 99 vs Ganador 100", new DateTime(2026, 7, 15, 14, 0, 0), "Mercedes-Benz Stadium, Atlanta"),
 
             // --- Partido por el Tercer Lugar (Third Place) ---
-            ("third_place", "Perdedor 101 vs Perdedor 102", new DateTime(2026, 7, 18, 16, 0, 0), "Hard Rock Stadium, Miami"),
+            (103, "third_place", "Perdedor 101 vs Perdedor 102", new DateTime(2026, 7, 18, 16, 0, 0), "Hard Rock Stadium, Miami"),
 
             // --- Gran Final (Final) ---
-            ("final", "Ganador 101 vs Ganador 102", new DateTime(2026, 7, 19, 14, 0, 0), "MetLife Stadium, New York/New Jersey")
+            (104, "final", "Ganador 101 vs Ganador 102", new DateTime(2026, 7, 19, 14, 0, 0), "MetLife Stadium, New York/New Jersey")
         };
         
         foreach (var km in knockoutSchedule)
@@ -287,7 +287,9 @@ public static class DbSeeder
             {
                 Phase = km.Phase,
                 Group = "",
-                MatchDay = 0,
+                MatchDay = km.MatchNumber, // Placeholder para el día del partido
+                HomeTeamId = null, // Placeholder para el equipo local
+                AwayTeamId = null, // Placeholder para el equipo visitante
                 MatchDate = km.Date,
                 Venue = km.Venue,
                 SlotLabel = km.SlotLabel,
