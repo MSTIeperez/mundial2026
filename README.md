@@ -142,13 +142,15 @@ UPDATE Users SET Role = 'admin' WHERE Username = 'tu_usuario';
 | GET    | /api/matches/groups          | Todos los partidos de grupos    |
 | GET    | /api/matches/groups/{grupo}  | Partidos de un grupo específico |
 | PUT    | /api/matches/{id}/score      | Registrar resultado (admin)     |
+| GET    | /api/matches/knockout/{phase}| Todos los partidos eliminatorios |
+| GET    | /api/matches/knockout/{phase}| Partidos eliminatorios por fase |
 
 ### Posiciones
 | Método | Endpoint                    | Descripción                        |
 |--------|-----------------------------|------------------------------------|
 | GET    | /api/standings              | Todas las tablas de posiciones     |
 | GET    | /api/standings/{grupo}      | Tabla de un grupo específico       |
-| GET    | /api/standings/round-of-32  | Emparejamientos ronda de 32        |
+| GET    | /api/standings/knockout-slots | Emparejamientos ronda de 32        |
 
 ---
 
