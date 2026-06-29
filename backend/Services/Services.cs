@@ -12,6 +12,10 @@ public interface IMatchService
     Task<List<MatchDto>> GetKnockoutMatchesAsync(string phase);
     Task<List<MatchDto>> GetAllKnockoutMatchesAsync();
     Task<bool> UpdateMatchScoreAsync(int matchId, int homeScore, int awayScore, int userId);
+    // Asigna/corrige equipos en partidos eliminatorios — uno o ambos pueden ser null (oponente pendiente)
+    Task<bool> UpdateKnockoutTeamsAsync(int matchId, int? homeTeamId, int? awayTeamId, int userId);
+    // Retorna todos los equipos disponibles para seleccionar en el modal
+    Task<List<TeamInfo>> GetAllTeamsAsync();
 }
 
 public record MatchDto(
@@ -84,7 +88,7 @@ public class MatchService : IMatchService
     public async Task<bool> UpdateMatchScoreAsync(int matchId, int homeScore, int awayScore, int userId)
     {
         var match = await _db.Matches.FindAsync(matchId);
-        if (match == null || match.Phase != "group") return false;
+        if (match == null ) return false;
 
         match.HomeScore = homeScore;
         match.AwayScore = awayScore;
@@ -96,8 +100,35 @@ public class MatchService : IMatchService
         return true;
     }
 
-    // FIX 1: MatchNumber = MatchDay (el seeder guarda el número FIFA 73-88 en MatchDay para eliminatorias)
-    // FIX 2: HomeTeam / AwayTeam son null en partidos eliminatorios pendientes → null-safe
+    public async Task<bool> UpdateKnockoutTeamsAsync(int matchId, int? homeTeamId, int? awayTeamId, int userId)
+    {
+        var match = await _db.Matches.FindAsync(matchId);
+        // Solo aplica a partidos eliminatorios (no de grupos)
+        if (match == null || match.Phase == "group") return false;
+
+        // Validar que los IDs referenciados existan en la tabla Teams
+        if (homeTeamId.HasValue && !await _db.Teams.AnyAsync(t => t.Id == homeTeamId.Value))
+            return false;
+        if (awayTeamId.HasValue && !await _db.Teams.AnyAsync(t => t.Id == awayTeamId.Value))
+            return false;
+
+        match.HomeTeamId    = homeTeamId;
+        match.AwayTeamId    = awayTeamId;
+        match.UpdatedByUserId = userId;
+        match.UpdatedAt     = DateTime.UtcNow;
+
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<List<TeamInfo>> GetAllTeamsAsync()
+    {
+        return await _db.Teams
+            .OrderBy(t => t.Group).ThenBy(t => t.Name)
+            .Select(t => new TeamInfo(t.Id, t.Name, t.Code, t.FlagEmoji))
+            .ToListAsync();
+    }
+
     private static MatchDto ToDto(Match m) => new(
         m.Id,
         m.MatchDay,   // MatchDay almacena: jornada (1-3) en grupos, número FIFA (73-88) en eliminatorias
@@ -128,7 +159,8 @@ public record StandingDto(
     int GoalsFor, int GoalsAgainst, int GoalDifference, int Points);
 
 public record KnockoutSlotDto(
-    int MatchNumber,
+    int MatchId,        // ID real en BD — usado por el frontend para el PUT /teams
+    int MatchNumber,    // Número oficial FIFA (73-88, etc.)
     string SlotLabel,
     TeamInfo? HomeTeam,
     TeamInfo? AwayTeam,
@@ -210,6 +242,7 @@ public class StandingsService : IStandingsService
                     : null);
 
             resolvedSlots.Add(new KnockoutSlotDto(
+                m.Id,          // MatchId — el frontend lo usa para PUT /api/matches/{id}/teams
                 matchNum,
                 m.SlotLabel ?? "",
                 finalHome,

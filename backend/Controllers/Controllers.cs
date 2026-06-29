@@ -76,9 +76,26 @@ public class MatchesController : ControllerBase
         if (!ok) return BadRequest(new { error = "Partido no encontrado o no es de fase de grupos" });
         return Ok(new { success = true });
     }
+
+    // GET /api/matches/teams — lista todos los equipos para el selector del modal
+    [HttpGet("teams")]
+    public async Task<IActionResult> GetAllTeams()
+        => Ok(await _matches.GetAllTeamsAsync());
+
+    // PUT /api/matches/{id}/teams — asigna/corrige equipos en partidos eliminatorios
+    // Permite dejar uno de los dos como null (oponente aún pendiente)
+    [HttpPut("{id}/teams")]
+    public async Task<IActionResult> UpdateTeams(int id, [FromBody] TeamsRequest req)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var ok = await _matches.UpdateKnockoutTeamsAsync(id, req.HomeTeamId, req.AwayTeamId, userId);
+        if (!ok) return BadRequest(new { error = "Partido no encontrado o no es eliminatorio" });
+        return Ok(new { success = true });
+    }
 }
 
 public record ScoreRequest(int HomeScore, int AwayScore);
+public record TeamsRequest(int? HomeTeamId, int? AwayTeamId);
 
 // ─── Standings Controller ─────────────────────────────────────────────────────
 [ApiController]
