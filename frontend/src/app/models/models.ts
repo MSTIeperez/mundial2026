@@ -19,6 +19,7 @@ export interface TeamInfo {
 
 export interface Match {
   id: number;
+  matchNumber: number;
   phase: string;
   group: string;
   matchDay: number;
@@ -47,7 +48,8 @@ export interface Standing {
 }
 
 export interface KnockoutSlot {
-  matchNumber: number;
+  matchId: number;        // ID real del partido en la BD (para el PUT)
+  matchNumber: number;    // Número FIFA del partido (73-88, 89-96...)
   slotLabel: string;
   homeTeam: TeamInfo | null;
   awayTeam: TeamInfo | null;

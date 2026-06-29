@@ -264,7 +264,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
       margin-bottom: 12px; align-items: center; gap: 8px;
     }
 
-    .match-body { display: flex; align-items: center; gap: 50px; padding: 15px 106px; }
+    .match-body { display: flex; align-items: center; gap: 50px; padding: 15px 106px;  justify-content: center;}
 
     .team-side {
       flex: 1; display: flex; align-items: center; gap: 8px;

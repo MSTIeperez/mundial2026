@@ -34,7 +34,6 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
         <div class="group-layout">
           <section class="matches-panel">
             <h2 class="panel-title">
-              ⚽ GRUPO <span class="text-gold">{{ activeGroup() }}</span>
               <span class="badge badge-muted">{{ groupMatches().length }} partidos</span>
             </h2>
 
@@ -57,14 +56,17 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
 
                     <div class="match-body">
                       <div class="team-side home">
-                        <img class="flag-img"
-                          [src]="match.homeTeam.code | flagUrl"
-                          [alt]="match.homeTeam.name"
-                          loading="lazy">
-                        <span class="team-name">{{ match.homeTeam.name }}</span>
-                        <span class="team-code text-muted">{{ match.homeTeam.code }}</span>
+                          @if (match.homeTeam) {
+                            <img class="flag-img"
+                              [src]="match.homeTeam.code | flagUrl"
+                              [alt]="match.homeTeam.name"
+                              loading="lazy">
+                            <span class="team-name">{{ match.homeTeam.name }}</span>
+                            <span class="team-code text-muted">{{ match.homeTeam.code }}</span>
+                          } @else {
+                            <span class="team-name text-muted">— Por definir —</span>
+                          }
                       </div>
-
                       <div class="score-area">
                         @if (editingId() === match.id) {
                           <input type="number" class="form-control score-input"
@@ -86,13 +88,28 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
                       </div>
 
                       <div class="team-side away">
-                        <span class="team-code text-muted">{{ match.awayTeam.code }}</span>
-                        <span class="team-name">{{ match.awayTeam.name }}</span>
-                        <img class="flag-img"
-                          [src]="match.awayTeam.code | flagUrl"
-                          [alt]="match.awayTeam.name"
-                          loading="lazy">
+                        @if (match.awayTeam) {
+                          <span class="team-code text-muted">{{ match.awayTeam.code }}</span>
+                          <span class="team-name">{{ match.awayTeam.name }}</span>
+                          <img class="flag-img"
+                            [src]="match.awayTeam.code | flagUrl"
+                            [alt]="match.awayTeam.name"
+                            loading="lazy">
+                        } @else {
+                          <span class="team-name text-muted">— Por definir —</span>
+                        }
                       </div>
+                      <!-- } @else {
+                        <div class="score-area">
+                          <span class="score-display text-gold">{{match.slotLabel}}</span>
+                        </div>
+                      } -->
+                    </div>
+                    
+                    <div class="match-meta">
+                      <span> Partido {{ match.matchNumber }}</span>
+                      <span class="match-date">{{ match.slotLabel }}</span>
+                      
                     </div>
 
                     @if (canEdit()) {
@@ -120,69 +137,6 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
             }
           </section>
 
-          <!-- <section class="standings-panel">
-            <h2 class="panel-title">📊 TABLA DE POSICIONES</h2>
-
-            @if (currentStandings().length > 0) {
-              <div class="card" style="overflow:hidden;padding:0">
-                <table class="standings-table" >
-                  <thead>
-                    <tr>
-                      <th style="width:32px">#</th>
-                      <th>Selección</th>
-                      <th title="Jugados">PJ</th>
-                      <th title="Ganados">G</th>
-                      <th title="Empatados">E</th>
-                      <th title="Perdidos">P</th>
-                      <th title="Goles a Favor">GF</th>
-                      <th title="Goles en Contra">GC</th>
-                      <th title="Diferencia de Goles">DG</th>
-                      <th title="Puntos"><strong>Pts</strong></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (s of currentStandings(); track s.team.id) {
-                      <tr [class]="getRowClass(s.position)">
-                        <td>
-                          <span class="pos-badge" [class]="getPosBadge(s.position)">
-                            {{ s.position }}
-                          </span>
-                        </td>
-                        <td>
-                          <div class="team-cell">
-                            <img class="flag-img flag-sm"
-                              [src]="s.team.code | flagUrl"
-                              [alt]="s.team.name"
-                              loading="lazy">
-                            <span>{{ s.team.name }}</span>
-                          </div>
-                        </td>
-                        <td class="text-muted">{{ s.played }}</td>
-                        <td class="text-green">{{ s.won }}</td>
-                        <td class="text-muted">{{ s.drawn }}</td>
-                        <td style="color:var(--c-accent2)">{{ s.lost }}</td>
-                        <td>{{ s.goalsFor }}</td>
-                        <td class="text-muted">{{ s.goalsAgainst }}</td>
-                        <td [class]="s.goalDifference > 0 ? 'text-green' : ''">
-                          {{ s.goalDifference > 0 ? '+' : '' }}{{ s.goalDifference }}
-                        </td>
-                        <td><strong class="text-mono">{{ s.points }}</strong></td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-                <div class="standings-legend">
-                  <span class="legend-item green">▌ Avanza (1°-2°)</span>
-                  <span class="legend-item gold">▌ Posible 3er lugar</span>
-                </div>
-              </div>
-            } @else {
-              <div class="card empty-state">
-                <div style="font-size:40px;margin-bottom:8px">📋</div>
-                <p>Registra resultados para ver la tabla</p>
-              </div>
-            }
-          </section> -->
         </div>
       }
     </div>
@@ -205,9 +159,9 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
     }
     .page-title { font-size: 32px; margin-bottom: 4px; }
     
-    .group-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+    .group-nav { display: flex; gap: 6px; }
     .group-tab {
-      width: 36px; height: 36px; border: 1px solid var(--c-border);
+      width: 100%; height: 36px; border: 1px solid var(--c-border);
       background: var(--c-card); color: var(--c-muted);
       border-radius: var(--radius); font-weight: 700; font-size: 13px;
       cursor: pointer; transition: all .2s;
@@ -263,7 +217,7 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
       margin-bottom: 12px; align-items: center; gap: 8px;
     }
 
-    .match-body { display: flex; align-items: center; gap: 50px; padding: 15px 106px; }
+    .match-body { display: flex; align-items: center; gap: 50px; padding: 15px 106px; justify-content: center;}
 
     .team-side {
       flex: 1; display: flex; align-items: center; gap: 8px;
@@ -327,16 +281,16 @@ interface ScoreEdit { homeScore: number; awayScore: number; }
   `]
 })
 export class PartidosComponent implements OnInit {
-  groupLetters = '16vos,8vos,4tos,Semifinales,3ro,Final'.split(',');
+  groupLetters = 'Dieciseisavos,Octavos,Cuartos,Semifinales,Tercer lugar,Final'.split(',');
   phaseLabels: Record<string, string> = {
-    '16vos': 'round_of_32',
-    '8vos': 'round_of_16',
-    '4tos': 'quarterfinals',
+    'Dieciseisavos': 'round_of_32',
+    'Octavos': 'round_of_16',
+    'Cuartos': 'quarterfinals',
     'Semifinales': 'semifinals',
-    '3ro': 'third_place',
+    'Tercer lugar': 'third_place',
     'Final': 'final'
   };
-  activeGroup = signal('16vos');
+  activeGroup = signal('Dieciseisavos');
   loading = signal(true);
   saving = signal(false);
   editingId = signal<number | null>(null);
